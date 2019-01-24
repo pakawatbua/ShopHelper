@@ -10,17 +10,22 @@ namespace ShopHelper
         {
         }
 
-        public List<ComparedItem> Compare(IEnumerable<Item> lazadaItems, IEnumerable<Item> shopeeItems)
+        public IEnumerable<ComparedItem> Compare(IEnumerable<Item> lazadaItems, IEnumerable<Item> shopeeItems)
         {
-            //foreach (var lazadaItem in lazadaItems)
-            //{
-            //    var matched = shopeeItems.FirstOrDefault(s => s.Name.ToLower().Contains())
-            //}
+            foreach (var l in lazadaItems)
+            {
+                var acceptedCount = l.Name.Length * 0.8;
+                var matchedShopee = shopeeItems.FirstOrDefault(s => Compute(s.Name.ToLower(), l.Name.ToLower()) < acceptedCount);
 
-            return null;
+                if (matchedShopee != null)
+                {
+                    var comparedItems = new ComparedItem() { LazadaName = l.Name, LazadaPrice = l.Price, ShopeeName = matchedShopee.Name, ShopeePrice = matchedShopee.Price };
+                    yield return comparedItems;
+                }
+            }
         }
 
-        internal object Write(string v)
+        internal object Write(string path)
         {
             throw new NotImplementedException();
         }
