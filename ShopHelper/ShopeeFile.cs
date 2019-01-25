@@ -3,6 +3,7 @@ using ShopHelper.Interfaces;
 using NPOI.HSSF.UserModel;
 using System.IO;
 using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace ShopHelper
 {
@@ -15,14 +16,14 @@ namespace ShopHelper
 
         public IEnumerable<Item> Read(string path)
         {
-            HSSFWorkbook hssfwb;
+            XSSFWorkbook hssfwb;
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                hssfwb = new HSSFWorkbook(file);
+                hssfwb = new XSSFWorkbook(file);
             }
 
             ISheet sheet = hssfwb.GetSheet("sheet1");
-            for (int row = 0; row <= sheet.LastRowNum; row++)
+            for (int row = 2; row <= sheet.LastRowNum; row++)
             {
                 if (sheet.GetRow(row) == null) continue;
 

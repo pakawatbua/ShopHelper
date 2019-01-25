@@ -11,15 +11,32 @@ namespace ShopHelper
     {
         static void Main(string[] args)
         {
-            var rootPath = @"C:\Shop";
+            Compare(0.3);
+        }
 
-            var lazadaItems =  new LazadaFile().Read(Path.Combine(rootPath, "lazada.xlsx"));
+        static void Compare(double torerantRate)
+        {
+            try
+            {
+                var rootPath = @"C:\Shop";
 
-            var shopeeItems = new ShopeeFile().Read(Path.Combine(rootPath, "shopee.xlsx"));
+                var lazadaItems = new LazadaFile().Read(Path.Combine(rootPath, "lazada.xlsx"));
 
-            var comparedItems = new PriceComparer().Compare(lazadaItems, shopeeItems);
+                var shopeeItems = new ShopeeFile().Read(Path.Combine(rootPath, "shopee.xlsx"));
 
-            var isSuccess = new ResultFile(comparedItems).Write(Path.Combine(rootPath, "compared.xlsx"));
+                var comparedItems = new PriceComparer().Compare(lazadaItems, shopeeItems, torerantRate);
+
+                var isSuccess = new ResultFile(comparedItems).Write(Path.Combine(rootPath, $"compared_{ DateTime.Now.ToString("yyyyMMddTHHmmss") }.xlsx"));
+
+                Console.WriteLine("Done!!!");
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error :" + ex.Message);
+            }
+
+            Console.ReadKey();
         }
     }
 }

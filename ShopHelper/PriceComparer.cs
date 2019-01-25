@@ -10,18 +10,34 @@ namespace ShopHelper
         {
         }
 
-        public IEnumerable<ComparedItem> Compare(IEnumerable<Item> lazadaItems, IEnumerable<Item> shopeeItems)
+        public IEnumerable<ComparedItem> Compare(IEnumerable<Item> lazadaItems, IEnumerable<Item> shopeeItems, double torerantRate)
         {
-            foreach (var l in lazadaItems)
+            var shopee = shopeeItems.ToList();
+            foreach (var l in lazadaItems.ToList())
             {
-                var acceptedCount = l.Name.Length * 0.8;
-                var matchedShopee = shopeeItems.FirstOrDefault(s => Compute(s.Name.ToLower(), l.Name.ToLower()) < acceptedCount);
+                var acceptedCount = l.Name.Length * torerantRate;
+                var matchedShopee = shopee.FirstOrDefault(s => Compute(s.Name.ToLower(), l.Name.ToLower()) < acceptedCount);
+                //var comparedItems = new ComparedItem() { LazadaName = l.Name, LazadaPrice = l.Price };
+
+                //if (matchedShopee != null)
+                //{
+                //    comparedItems.ShopeeName = matchedShopee.Name;
+                //    comparedItems.ShopeePrice = matchedShopee.Price;
+                //}
+
+                //yield return comparedItems;
+
+                
 
                 if (matchedShopee != null)
                 {
-                    var comparedItems = new ComparedItem() { LazadaName = l.Name, LazadaPrice = l.Price, ShopeeName = matchedShopee.Name, ShopeePrice = matchedShopee.Price };
+                    var comparedItems = new ComparedItem() { LazadaName = l.Name, LazadaPrice = l.Price };
+                    comparedItems.ShopeeName = matchedShopee.Name;
+                    comparedItems.ShopeePrice = matchedShopee.Price;
                     yield return comparedItems;
                 }
+
+                
             }
         }
 
