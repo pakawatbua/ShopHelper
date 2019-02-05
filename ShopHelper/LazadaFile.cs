@@ -28,8 +28,9 @@ namespace ShopHelper
 
                 var name = sheet.GetRow(row).GetCell(5).StringCellValue;
                 var price = decimal.Parse(sheet.GetRow(row).GetCell(1).StringCellValue);
+                var sku = sheet.GetRow(row).GetCell(0).StringCellValue;
 
-                yield return new Item() { Name = name, Price = price };
+                yield return new Item() { Name = name, Price = price , SKU = sku };
             }
         }
 

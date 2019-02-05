@@ -10,6 +10,7 @@ namespace ShopHelper
     {
         public string LazadaName { get; set; }
         public decimal LazadaPrice { get; set; }
+        public string LazadaSku { get; set; }
         public string ShopeeName { get; set; }
         public decimal ShopeePrice { get; set; }
     }

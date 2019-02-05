@@ -17,27 +17,15 @@ namespace ShopHelper
             {
                 var acceptedCount = l.Name.Length * torerantRate;
                 var matchedShopee = shopee.FirstOrDefault(s => Compute(s.Name.ToLower(), l.Name.ToLower()) < acceptedCount);
-                //var comparedItems = new ComparedItem() { LazadaName = l.Name, LazadaPrice = l.Price };
-
-                //if (matchedShopee != null)
-                //{
-                //    comparedItems.ShopeeName = matchedShopee.Name;
-                //    comparedItems.ShopeePrice = matchedShopee.Price;
-                //}
-
-                //yield return comparedItems;
-
-                
+                var comparedItems = new ComparedItem() { LazadaName = l.Name, LazadaPrice = l.Price , LazadaSku = l.SKU};
 
                 if (matchedShopee != null)
                 {
-                    var comparedItems = new ComparedItem() { LazadaName = l.Name, LazadaPrice = l.Price };
                     comparedItems.ShopeeName = matchedShopee.Name;
                     comparedItems.ShopeePrice = matchedShopee.Price;
-                    yield return comparedItems;
                 }
 
-                
+                yield return comparedItems;
             }
         }
 

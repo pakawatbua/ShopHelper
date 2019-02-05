@@ -9,6 +9,8 @@ namespace ShopHelper
 {
     class Program
     {
+        private const string _rootPath = @"C:\Shop";
+
         static void Main(string[] args)
         {
             Compare(0.3);
@@ -18,15 +20,13 @@ namespace ShopHelper
         {
             try
             {
-                var rootPath = @"C:\Shop";
+                var lazadaItems = new LazadaFile().Read(Path.Combine(_rootPath, "lazada.xlsx"));
 
-                var lazadaItems = new LazadaFile().Read(Path.Combine(rootPath, "lazada.xlsx"));
-
-                var shopeeItems = new ShopeeFile().Read(Path.Combine(rootPath, "shopee.xlsx"));
+                var shopeeItems = new ShopeeFile().Read(Path.Combine(_rootPath, "shopee.xlsx"));
 
                 var comparedItems = new PriceComparer().Compare(lazadaItems, shopeeItems, torerantRate);
 
-                var isSuccess = new ResultFile(comparedItems).Write(Path.Combine(rootPath, $"compared_{ DateTime.Now.ToString("yyyyMMddTHHmmss") }.xlsx"));
+                var isSuccess = new ComparedFile(comparedItems).Write(Path.Combine(_rootPath, $"compared_{ DateTime.Now.ToString("yyyyMMddTHHmmss") }.xlsx"));
 
                 Console.WriteLine("Done!!!");
             }
