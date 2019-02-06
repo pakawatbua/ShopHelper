@@ -60,9 +60,11 @@
     <Compile Include="ComparedItem.cs" />
     <Compile Include="Interfaces\IFileManager.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="LazadaBasePriceFile.cs" />
     <Compile Include="LazadaFile.cs" />
+    <Compile Include="LazadaSellListFile.cs" />
     <Compile Include="PriceComparer.cs" />
-    <Compile Include="PriceUpdater.cs" />
+    <Compile Include="ProfitFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ComparedFile.cs" />

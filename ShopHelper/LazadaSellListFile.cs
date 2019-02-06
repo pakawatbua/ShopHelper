@@ -6,7 +6,7 @@ using NPOI.XSSF.UserModel;
 
 namespace ShopHelper
 {
-    internal class LazadaFile : IFileManager
+    internal class LazadaSellListFile : IFileManager
     {
         public IEnumerable<Item> Read(string path)
         {
@@ -21,11 +21,9 @@ namespace ShopHelper
             {
                 if (sheet.GetRow(row) == null) continue;
 
-                var name = sheet.GetRow(row).GetCell(5).StringCellValue;
+                var name = sheet.GetRow(row).GetCell(0).StringCellValue;
                 var price = decimal.Parse(sheet.GetRow(row).GetCell(1).StringCellValue);
-                var sku = sheet.GetRow(row).GetCell(0).StringCellValue;
-
-                yield return new Item() { Name = name, Price = price , SKU = sku };
+                yield return new Item() { Name = name, Price = price };
             }
         }
 
