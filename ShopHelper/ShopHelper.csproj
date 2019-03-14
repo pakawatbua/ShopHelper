@@ -57,7 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common.cs" />
     <Compile Include="ComparedItem.cs" />
+    <Compile Include="File.cs" />
     <Compile Include="Interfaces\IFileManager.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="LazadaBasePriceFile.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ComparedFile.cs" />
     <Compile Include="ShopeeFile.cs" />
+    <Compile Include="StockManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ShopHelper
@@ -9,8 +10,28 @@ namespace ShopHelper
 
         static void Main()
         {
-            ComparePrice(0.3);
-            ProfitCal();
+            //ComparePrice(0.3);
+            //ProfitCal();
+            UpdateStock(Common.Shop.Shopee, Common.Shop.Shopee);
+        }
+
+        private static void UpdateStock(Common.Shop sourceShop, Common.Shop descShop)
+        {
+            try
+            {
+                var sourceStock = new File(sourceShop, Common.Type.Stock).Read(Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx"));
+
+                var descStock = new File(descShop, Common.Type.Stock).Read(Path.Combine(RootPath, @"Stock\Pun\stock.xlsx"));
+
+                new StockManager(sourceStock, descStock).Write(Common.Shop.Shopee,
+                    Path.Combine(RootPath, @"Stock\Shopee\updated.xlsx"));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error :" + ex.Message);
+            }
+
+            Console.ReadKey();
         }
 
         private static void ComparePrice(double torerantRate)
@@ -21,7 +42,7 @@ namespace ShopHelper
 
                 var shopeePrice = new ShopeeFile().Read(Path.Combine(RootPath, "shopee.xlsx"));
 
-                new ComparedFile(lazadaPrice, shopeePrice, torerantRate).Write(Path.Combine(RootPath, $"compared_{ DateTime.Now :yyyyMMddTHHmmss}.xlsx"));
+                new ComparedFile(lazadaPrice, shopeePrice, torerantRate).Write(Path.Combine(RootPath, $"compared_{ DateTime.Now:yyyyMMddTHHmmss}.xlsx"));
 
                 Console.WriteLine("Done!!!");
             }
@@ -42,7 +63,7 @@ namespace ShopHelper
 
                 var lazadaBasePrice = new LazadaBasePriceFile().Read(Path.Combine(RootPath, "lazadaBasePrice.xlsx"));
 
-                new ProfitFile(lazadaSellList, lazadaBasePrice).Write(Path.Combine(RootPath, $"profited_{ DateTime.Now :yyyyMMddTHHmmss}.xlsx"));
+                new ProfitFile(lazadaSellList, lazadaBasePrice).Write(Path.Combine(RootPath, $"profited_{ DateTime.Now:yyyyMMddTHHmmss}.xlsx"));
 
                 Console.WriteLine("Done!!!");
             }
