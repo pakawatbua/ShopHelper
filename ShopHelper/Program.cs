@@ -24,7 +24,9 @@ namespace ShopHelper
                 var descStock = new File(descShop, Common.Type.Stock).Read(Path.Combine(RootPath, @"Stock\Pun\stock.xlsx"));
 
                 new StockManager(sourceStock, descStock).Write(Common.Shop.Shopee,
-                    Path.Combine(RootPath, @"Stock\Shopee\updated.xlsx"));
+                    Path.Combine(RootPath, $@"Stock\Shopee\updated{DateTime.Now.ToShortDateString()}.xlsx"));
+
+                Console.WriteLine("Done!!!");
             }
             catch (Exception ex)
             {

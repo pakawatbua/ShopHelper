@@ -20,10 +20,6 @@ namespace ShopHelper
 
         public void Write(Common.Shop shop, string outputPath)
         {
-
-            var test1 = _sourceStocks.ToList();
-            var test2 = _descStocks.ToList();
-
             var results = new List<Item>();
             foreach (var dStock in _descStocks)
             {
