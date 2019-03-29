@@ -12,19 +12,55 @@ namespace ShopHelper
         {
             //ComparePrice(0.3);
             //ProfitCal();
-            UpdateStock(Common.Shop.Shopee, Common.Shop.Shopee);
+
+            //var scrPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
+            //var descPart = Path.Combine(RootPath, @"Stock\Pun\stock.xlsx");
+            //var outputPart = Path.Combine(RootPath, $@"Stock\Shopee\updated{DateTime.Now.ToShortDateString()}.xlsx");
+            //UpdateStock(Common.Shop.Shopee, Common.Shop.Shopee, scrPart, descPart, outputPart);
+
+            var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
+            var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
+            var outputPart = Path.Combine(RootPath, $@"Stock\Lazada\Update\updated{DateTime.Now.Day}.xlsx");
+            UpdateStock(Common.Shop.Lazada, Common.Shop.Shopee, scrPart, descPart, outputPart);
+
+            //var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
+            //var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
+            //var outputPart = Path.Combine(RootPath, $@"Stock\Lazada\UnmatchedName\unmatchedName{DateTime.Now.Day}.xlsx");
+            //GetUnmatchedName(Common.Shop.Lazada, Common.Shop.Shopee, scrPart, descPart, outputPart);
         }
 
-        private static void UpdateStock(Common.Shop sourceShop, Common.Shop descShop)
+        private static void GetUnmatchedName(Common.Shop srcShop, Common.Shop descShop, string scrPart, string descPart,
+            string outputPart)
         {
             try
             {
-                var sourceStock = new File(sourceShop, Common.Type.Stock).Read(Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx"));
+                var sourceStock = new File(srcShop, Common.Type.Stock).Read(scrPart);
 
-                var descStock = new File(descShop, Common.Type.Stock).Read(Path.Combine(RootPath, @"Stock\Pun\stock.xlsx"));
+                var descStock = new File(descShop, Common.Type.Stock).Read(descPart);
 
-                new StockManager(sourceStock, descStock).Write(Common.Shop.Shopee,
-                    Path.Combine(RootPath, $@"Stock\Shopee\updated{DateTime.Now.ToShortDateString()}.xlsx"));
+                new UnmatchedNameManager(sourceStock, descStock).Write(srcShop,
+                    Path.Combine(outputPart));
+
+                Console.WriteLine("Done!!!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error :" + ex.Message);
+            }
+
+            Console.ReadKey();
+        }
+
+        private static void UpdateStock(Common.Shop srcShop, Common.Shop descShop, string scrPart, string descPart, string outputPart)
+        {
+            try
+            {
+                var sourceStock = new File(srcShop, Common.Type.Stock).Read(scrPart);
+
+                var descStock = new File(descShop, Common.Type.Stock).Read(descPart);
+
+                new StockManager(sourceStock, descStock).Write(srcShop,
+                    Path.Combine(outputPart));
 
                 Console.WriteLine("Done!!!");
             }

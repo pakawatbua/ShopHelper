@@ -51,9 +51,25 @@ namespace ShopHelper
             throw new NotImplementedException();
         }
 
-        private List<Item> GeLazadaStock(string path)
+        private IEnumerable<Item> GeLazadaStock(string path)
         {
-            throw new NotImplementedException();
+            XSSFWorkbook hssfwb;
+            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                hssfwb = new XSSFWorkbook(file);
+            }
+
+            ISheet sheet = hssfwb.GetSheet("template");
+            for (int row = 1; row <= sheet.LastRowNum; row++)
+            {
+                if (sheet.GetRow(row) == null) continue;
+
+                var name = sheet.GetRow(row).GetCell(2).StringCellValue;
+                var sku = sheet.GetRow(row).GetCell(0).StringCellValue;
+                var stock = int.Parse(sheet.GetRow(row).GetCell(1).StringCellValue);
+
+                yield return new Item() { Name = name, Stock = stock, SKU = sku};
+            }
         }
 
         private List<Item> GetShopeePrice(string path)
@@ -77,8 +93,9 @@ namespace ShopHelper
                 var name = sheet.GetRow(row).GetCell(2).StringCellValue;
                 var price = decimal.Parse(sheet.GetRow(row).GetCell(6).StringCellValue);
                 var stock = int.Parse(sheet.GetRow(row).GetCell(7).StringCellValue);
+                var altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
 
-                yield return new Item() { Name = name, Price = price , Stock = stock  };
+                yield return new Item() { Name = name, Price = price, Stock = stock, AltName = altName };
             }
         }
     }

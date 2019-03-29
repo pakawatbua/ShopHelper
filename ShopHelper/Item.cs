@@ -9,5 +9,11 @@
         public string SKU { get; set; }
         public decimal Profit { get; set; }
         public bool Changed { get; set; }
+        public string LazName { get; set; }
+        public string ShopeeName { get; set; }
+        public string Matched70Name { get; set; }
+        public string Matched80Name { get; set; }
+        public string Matched90Name { get; set; }
+        public string AltName { get; set; }
     }
 }
