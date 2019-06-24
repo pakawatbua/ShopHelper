@@ -38,11 +38,32 @@ namespace ShopHelper
                             return GeLazadaStock(path);
                         case Common.Type.Price:
                             return GetLazadaPrice(path);
+                        case Common.Type.Product:
+                            return GetLazadaProduct(path);
                         default:
                             return null;
                     }
                 default:
                     return null;
+            }
+        }
+
+        private IEnumerable<Item> GetLazadaProduct(string path)
+        {
+            XSSFWorkbook hssfwb;
+            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                hssfwb = new XSSFWorkbook(file);
+            }
+
+            ISheet sheet = hssfwb.GetSheet("Sheet1");
+            for (int row = 1; row <= sheet.LastRowNum; row++)
+            {
+                if (sheet.GetRow(row) == null) continue;
+
+                var sku = sheet.GetRow(row).GetCell(4).StringCellValue;
+
+                yield return new Item() { SKU = sku };
             }
         }
 

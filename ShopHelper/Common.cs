@@ -16,8 +16,10 @@ namespace ShopHelper
 
         public enum Type
         {
-           Stock ,
-           Price
+            Stock,
+            Price,
+            Product,
+            CampaignPrice
         }
     }
 }

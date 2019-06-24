@@ -73,6 +73,7 @@
     <Compile Include="ShopeeFile.cs" />
     <Compile Include="StockManager.cs" />
     <Compile Include="UnmatchedNameManager.cs" />
+    <Compile Include="CampaignManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

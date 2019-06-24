@@ -15,18 +15,42 @@ namespace ShopHelper
 
             //var scrPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
             //var descPart = Path.Combine(RootPath, @"Stock\Pun\stock.xlsx");
-            //var outputPart = Path.Combine(RootPath, $@"Stock\Shopee\updated{DateTime.Now.ToShortDateString()}.xlsx");
+            //var outputPart = Path.Combine(RootPath, $@"Stock\Shopee\updated{DateTime.Now.Day}.xlsx");
             //UpdateStock(Common.Shop.Shopee, Common.Shop.Shopee, scrPart, descPart, outputPart);
 
-            var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
-            var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
-            var outputPart = Path.Combine(RootPath, $@"Stock\Lazada\Update\updated{DateTime.Now.Day}.xlsx");
-            UpdateStock(Common.Shop.Lazada, Common.Shop.Shopee, scrPart, descPart, outputPart);
+            //var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
+            //var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
+            //var outputPart = Path.Combine(RootPath, $@"Stock\Lazada\Update\updated{DateTime.Now.Day}.xlsx");
+            //UpdateStock(Common.Shop.Lazada, Common.Shop.Shopee, scrPart, descPart, outputPart);
 
             //var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
             //var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
             //var outputPart = Path.Combine(RootPath, $@"Stock\Lazada\UnmatchedName\unmatchedName{DateTime.Now.Day}.xlsx");
             //GetUnmatchedName(Common.Shop.Lazada, Common.Shop.Shopee, scrPart, descPart, outputPart);
+
+            var top100Part = Path.Combine(RootPath, @"Price\Lazada\Top100.xlsx");
+            var allPart = Path.Combine(RootPath, @"Price\Lazada\all.xlsx");
+            var outputPart = Path.Combine(RootPath, $@"Price\Lazada\Top100_{DateTime.Now.Day}.xlsx");
+            GetTop100Price(top100Part, allPart, outputPart);
+        }
+
+        private static void GetTop100Price(string top100Part, string allPart, string outputPart)
+        {
+            try
+            {
+                var top100Products = new File(Common.Shop.Lazada, Common.Type.Product).Read(top100Part);
+
+                new CampaignManager(top100Products).Write(Common.Shop.Lazada,
+                    Path.Combine(outputPart) , allPart);
+
+                Console.WriteLine("Done!!!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error :" + ex.Message);
+            }
+
+            Console.ReadKey();
         }
 
         private static void GetUnmatchedName(Common.Shop srcShop, Common.Shop descShop, string scrPart, string descPart,
