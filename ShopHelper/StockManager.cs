@@ -36,30 +36,24 @@ namespace ShopHelper
         {
             var results = new List<Item>();
 
-            foreach (var source in _sources)
+            foreach (var laz in _sources)
             {
-                var descs = _descs.Where(
-                    s => string.Compare(s.Name, source.Name, StringComparison.InvariantCultureIgnoreCase) == 0).ToList();
+                var shopee = _descs.Where(
+                    s => string.Compare(s.Name, laz.Name, StringComparison.InvariantCultureIgnoreCase) == 0).ToList();
 
-                var hasAltName = descs.Count > 1;
-
-                var lazName = source.Name;
-                var sku = source.SKU;
-                var stock = descs.Count == 0 ? source.Stock : hasAltName ? -9 : descs.First().Stock;
-                var changed = descs.Count != 0;
                 var builder = new StringBuilder();
 
-                if (hasAltName)
+                if (shopee.Count > 1)
                 {
-                    descs.ForEach(x => builder.Append($"{x.AltName} : {x.Stock}, "));
+                    shopee.ForEach(x => builder.Append($"{x.AltName} : {x.Stock}, "));
                 }
 
                 results.Add(new Item()
                 {
-                    LazName = lazName,
-                    SKU = sku,
-                    Stock = stock,
-                    Changed = changed,
+                    LazName = laz.Name,
+                    SKU = laz.SKU,
+                    Stock = GetMatcherdStock(laz, shopee),
+                    Changed = shopee.Count != 0,
                     AltName = builder.ToString()
                 });
             }
@@ -89,6 +83,23 @@ namespace ShopHelper
 
                 workbook.Write(stream);
             }
+        }
+
+        /// <summary>
+        /// If not exist in shopee then lazada stock
+        /// If exist shopee no alt name then shopee stock
+        /// If exist shopee have alt then pick one
+        /// </summary>
+        /// <param name="laz"></param>
+        /// <param name="shopees"></param>
+        /// <returns></returns>
+        private int GetMatcherdStock(Item laz, List<Item> shopees)
+        {
+            if (!shopees.Any()) return laz.Stock;
+
+            if (shopees.First().AltName == null) return shopees.First().Stock;
+
+            return shopees.OrderBy(s => CompareHelper.Compare(laz.SKU, s.AltName)).First().Stock;
         }
 
         private void WriteShopee(string outputPath)
