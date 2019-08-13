@@ -93,9 +93,9 @@ namespace ShopHelper
             }
         }
 
-        private List<Item> GetShopeePrice(string path)
+        private IEnumerable<Item> GetShopeePrice(string path)
         {
-            throw new NotImplementedException();
+            return GetShopeeStock(path);
         }
 
         private IEnumerable<Item> GetShopeeStock(string path)

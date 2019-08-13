@@ -6,22 +6,22 @@ namespace ShopHelper
 {
     internal class Program
     {
-        private const string RootPath = @"C:\Shop";
+        private const string RootPath = @"C:\Users\pbuaklay\OneDrive\Shop";
 
         static void Main()
         {
             //ComparePrice(0.3);
             //ProfitCal();
 
-            //var scrPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
-            //var descPart = Path.Combine(RootPath, @"Stock\Pun\stock.xlsx");
-            //var outputPart = Path.Combine(RootPath, $@"Stock\Shopee\updated{DateTime.Now.Day}.xlsx");
-            //UpdateStock(Common.Shop.Shopee, Common.Shop.Shopee, scrPart, descPart, outputPart);
+            var scrPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
+            var descPart = Path.Combine(RootPath, @"Stock\Pun\stock.xlsx");
+            var outputPart = Path.Combine(RootPath, $@"Stock\Shopee\updated_{DateTime.Now.Day}.xlsx");
+            UpdateStock(Common.Shop.Shopee, Common.Shop.Shopee, scrPart, descPart, outputPart);
 
-            var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
-            var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
-            var outputPart = Path.Combine(RootPath, $@"Stock\Lazada\Update\updated{DateTime.Now.Day}.xlsx");
-            UpdateStock(Common.Shop.Lazada, Common.Shop.Shopee, scrPart, descPart, outputPart);
+            //var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
+            //var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
+            //var outputPart = Path.Combine(RootPath, $@"Stock\Lazada\Update\updated{DateTime.Now.Day}.xlsx");
+            //UpdateStock(Common.Shop.Lazada, Common.Shop.Shopee, scrPart, descPart, outputPart);
 
             //var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
             //var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
@@ -32,6 +32,12 @@ namespace ShopHelper
             //var allPart = Path.Combine(RootPath, @"Price\Lazada\all.xlsx");
             //var outputPart = Path.Combine(RootPath, $@"Price\Lazada\Top100_{DateTime.Now.Day}.xlsx");
             //GetTop100Price(top100Part, allPart, outputPart);
+
+
+            //var scrPart = Path.Combine(RootPath, @"Price\Shopee\price.xlsx");
+            //var descPart = Path.Combine(RootPath, @"Price\Pun\price.xlsx");
+            //var outputPart = Path.Combine(RootPath, $@"Price\Shopee\updated{DateTime.Now.Day}.xlsx");
+            //UpdatePrice(Common.Shop.Shopee, Common.Shop.Shopee, scrPart, descPart, outputPart);
         }
 
         private static void GetTop100Price(string top100Part, string allPart, string outputPart)
@@ -63,6 +69,27 @@ namespace ShopHelper
                 var descStock = new File(descShop, Common.Type.Stock).Read(descPart);
 
                 new UnmatchedNameManager(sourceStock, descStock).Write(srcShop,
+                    Path.Combine(outputPart));
+
+                Console.WriteLine("Done!!!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error :" + ex.Message);
+            }
+
+            Console.ReadKey();
+        }
+
+        private static void UpdatePrice(Common.Shop srcShop, Common.Shop descShop, string scrPart, string descPart, string outputPart)
+        {
+            try
+            {
+                var sourceStock = new File(srcShop, Common.Type.Price).Read(scrPart);
+
+                var descStock = new File(descShop, Common.Type.Price).Read(descPart);
+
+                new PriceManager(sourceStock, descStock).Write(srcShop,
                     Path.Combine(outputPart));
 
                 Console.WriteLine("Done!!!");

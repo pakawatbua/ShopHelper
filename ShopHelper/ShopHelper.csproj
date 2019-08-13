@@ -66,6 +66,7 @@
     <Compile Include="LazadaBasePriceFile.cs" />
     <Compile Include="LazadaFile.cs" />
     <Compile Include="LazadaSellListFile.cs" />
+    <Compile Include="PriceManager.cs" />
     <Compile Include="ProfitFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

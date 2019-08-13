@@ -36,26 +36,34 @@ namespace ShopHelper
         {
             var results = new List<Item>();
 
-            foreach (var laz in _sources)
+            try
             {
-                var shopee = _descs.Where(
-                    s => string.Compare(s.Name, laz.Name, StringComparison.InvariantCultureIgnoreCase) == 0).ToList();
-
-                var builder = new StringBuilder();
-
-                if (shopee.Count > 1)
+                foreach (var laz in _sources)
                 {
-                    shopee.ForEach(x => builder.Append($"{x.AltName} : {x.Stock}, "));
+                    var shopee = _descs.Where(
+                        s => string.Compare(s.Name, laz.Name, StringComparison.InvariantCultureIgnoreCase) == 0).ToList();
+
+                    var builder = new StringBuilder();
+
+                    if (shopee.Count > 1)
+                    {
+                        shopee.ForEach(x => builder.Append($"{x.AltName} : {x.Stock}, "));
+                    }
+
+                    results.Add(new Item()
+                    {
+                        LazName = laz.Name,
+                        SKU = laz.SKU,
+                        Stock = GetMatcherdStock(laz, shopee),
+                        Changed = shopee.Count != 0,
+                        AltName = builder.ToString()
+                    });
                 }
-
-                results.Add(new Item()
-                {
-                    LazName = laz.Name,
-                    SKU = laz.SKU,
-                    Stock = GetMatcherdStock(laz, shopee),
-                    Changed = shopee.Count != 0,
-                    AltName = builder.ToString()
-                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
 
             using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))
@@ -99,19 +107,55 @@ namespace ShopHelper
 
             if (shopees.First().AltName == null) return shopees.First().Stock;
 
-            return shopees.OrderBy(s => CompareHelper.Compare(laz.SKU, s.AltName)).First().Stock;
+            return shopees.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(laz.SKU, s.AltName)).First().Stock;
+        }
+
+        /// <summary>
+        /// IF alt match then matched
+        /// IF name match then matched
+        /// IF not then desc
+        /// </summary>
+        /// <param name="desc"></param>
+        /// <param name="sources"></param>
+        /// <param name="changed"></param>
+        private Item GetMatcherdItem(Item desc, List<Item> sources, ref bool changed)
+        {
+            if (desc.AltName != null)
+            {
+                changed = true;
+                var alt = sources.OrderBy(s => CompareHelper.Compare(desc.AltName, s.AltName?? "")).FirstOrDefault();
+                if (alt != null)
+                {
+                    return alt;
+                }
+            }
+
+            var matched = _sources.FirstOrDefault(s => string.CompareOrdinal(s.Name, desc.Name) == 0);
+
+            if (matched != null)
+            {
+                changed = true;
+                return matched;
+            }
+
+            changed = false;
+            return desc;
         }
 
         private void WriteShopee(string outputPath)
         {
+            try
+            {
+
+            
             var results = new List<Item>();
             foreach (var dStock in _descs)
             {
-                var compared = _sources.FirstOrDefault(s => string.CompareOrdinal(s.Name, dStock.Name) == 0);
+                bool changed = true;
+                var matched = GetMatcherdItem(dStock, _sources.ToList(), ref changed);
                 var name = dStock.Name;
-                var stock = compared?.Stock ?? dStock.Stock;
-                var price = compared?.Price ?? dStock.Price;
-                var changed = compared != null;
+                var stock = matched.Stock;
+                var price = matched.Price;
 
                 results.Add(new Item() { Name = name, Stock = stock, Price = price, Changed = changed });
             }
@@ -139,6 +183,13 @@ namespace ShopHelper
 
                 workbook.Write(stream);
             }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 }
