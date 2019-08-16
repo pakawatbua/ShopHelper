@@ -19,5 +19,8 @@
         public string Matched90Name { get; set; }
         public string AltName { get; set; }
         public bool Matched { get; set; }
+        public decimal LazPrice { get; set; }
+        public decimal ShopPrice { get; set; }
+        public string IsOverPrice { get; set; }
     }
 }

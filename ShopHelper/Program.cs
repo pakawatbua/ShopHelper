@@ -13,10 +13,15 @@ namespace ShopHelper
             //ComparePrice(0.3);
             //ProfitCal();
 
-            var costPath = Path.Combine(RootPath, @"Profit\Shopee\cost.xlsx");
-            var sellPath = Path.Combine(RootPath, @"Profit\Lazada\sell.xlsx");
-            var profitPath = Path.Combine(RootPath, $@"Profit\Profit\profit_{DateTime.Now.Millisecond}.xlsx");
-            CalculateProfit(Common.Shop.Shopee, Common.Shop.Lazada, costPath, sellPath, profitPath);
+            var costPath = Path.Combine(RootPath, @"Price\Shopee\price.xlsx");
+            var sellPath = Path.Combine(RootPath, @"Price\Lazada\price.xlsx");
+            var profitPath = Path.Combine(RootPath, $@"Price\Result\profit_{DateTime.Now.Date.Day}.xlsx");
+            ComparePrice(Common.Shop.Shopee, Common.Shop.Lazada, costPath, sellPath, profitPath);
+
+            //var sourcePath = Path.Combine(RootPath, @"Profit\Shopee\cost.xlsx");
+            //var descPath = Path.Combine(RootPath, @"Profit\Lazada\sell.xlsx");
+            //var profitPath = Path.Combine(RootPath, $@"Profit\Profit\profit_{DateTime.Now.Millisecond}.xlsx");
+            //CalculateProfit(Common.Shop.Shopee, Common.Shop.Lazada, sourcePath, descPath, profitPath);
 
             //var scrPath = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
             //var descPath = Path.Combine(RootPath, @"Stock\Pun\stock.xlsx");
@@ -149,15 +154,15 @@ namespace ShopHelper
             Console.ReadKey();
         }
 
-        private static void ComparePrice(double torerantRate)
+        private static void ProfitCal()
         {
             try
             {
-                var lazadaPrice = new LazadaFile().Read(Path.Combine(RootPath, "lazada.xlsx"));
+                var lazadaSellList = new LazadaSellListFile().Read(Path.Combine(RootPath, "lazadaSellList.xlsx"));
 
-                var shopeePrice = new ShopeeFile().Read(Path.Combine(RootPath, "shopee.xlsx"));
+                var lazadaBasePrice = new LazadaBasePriceFile().Read(Path.Combine(RootPath, "lazadaBasePrice.xlsx"));
 
-                new ComparedFile(lazadaPrice, shopeePrice, torerantRate).Write(Path.Combine(RootPath, $"compared_{ DateTime.Now:yyyyMMddTHHmmss}.xlsx"));
+                new ProfitFile(lazadaSellList, lazadaBasePrice).Write(Path.Combine(RootPath, $"profited_{ DateTime.Now}.xlsx"));
 
                 Console.WriteLine("Done!!!");
             }
@@ -170,21 +175,21 @@ namespace ShopHelper
             Console.ReadKey();
         }
 
-        private static void ProfitCal()
+        private static void ComparePrice(Common.Shop sourceShop, Common.Shop descShop, string sourcePath, string descPath, string profitPath)
         {
             try
             {
-                var lazadaSellList = new LazadaSellListFile().Read(Path.Combine(RootPath, "lazadaSellList.xlsx"));
+                var shopeePriceList = new File(sourceShop, Common.Type.Price).Read(sourcePath);
 
-                var lazadaBasePrice = new LazadaBasePriceFile().Read(Path.Combine(RootPath, "lazadaBasePrice.xlsx"));
+                var lazadaPriceList = new File(descShop, Common.Type.Price).Read(descPath);
 
-                new ProfitFile(lazadaSellList, lazadaBasePrice).Write(Path.Combine(RootPath, $"profited_{ DateTime.Now:yyyyMMddTHHmmss}.xlsx"));
+                new PriceManager(shopeePriceList, lazadaPriceList).Write(descShop,
+                    Path.Combine(profitPath));
 
                 Console.WriteLine("Done!!!");
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine("Error :" + ex.Message);
             }
 

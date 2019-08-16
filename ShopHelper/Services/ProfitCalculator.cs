@@ -40,8 +40,6 @@ namespace ShopHelper
             {
                 var matched = MatchingHelper.Match(MatchingHelper.MatchingType.LazToSho, sell, _cost);
 
-                var builder = new StringBuilder();
-
                 results.Add(new Item()
                 {
                     LazName = sell.Name,
