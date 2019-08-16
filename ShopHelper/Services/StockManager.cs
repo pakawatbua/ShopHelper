@@ -36,34 +36,26 @@ namespace ShopHelper
         {
             var results = new List<Item>();
 
-            try
+            foreach (var laz in _sources)
             {
-                foreach (var laz in _sources)
+                var shopee = _descs.Where(
+                    s => string.Compare(s.Name, laz.Name, StringComparison.InvariantCultureIgnoreCase) == 0).ToList();
+
+                var builder = new StringBuilder();
+
+                if (shopee.Count > 1)
                 {
-                    var shopee = _descs.Where(
-                        s => string.Compare(s.Name, laz.Name, StringComparison.InvariantCultureIgnoreCase) == 0).ToList();
-
-                    var builder = new StringBuilder();
-
-                    if (shopee.Count > 1)
-                    {
-                        shopee.ForEach(x => builder.Append($"{x.AltName} : {x.Stock}, "));
-                    }
-
-                    results.Add(new Item()
-                    {
-                        LazName = laz.Name,
-                        SKU = laz.SKU,
-                        Stock = GetMatcherdStock(laz, shopee),
-                        Changed = shopee.Count != 0,
-                        AltName = builder.ToString()
-                    });
+                    shopee.ForEach(x => builder.Append($"{x.AltName} : {x.Stock}, "));
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
+
+                results.Add(new Item()
+                {
+                    LazName = laz.Name,
+                    SKU = laz.SKU,
+                    Stock = GetMatcherdLazadaNShopee(laz, shopee),
+                    Changed = shopee.Count != 0,
+                    AltName = builder.ToString()
+                });
             }
 
             using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))
@@ -101,7 +93,7 @@ namespace ShopHelper
         /// <param name="laz"></param>
         /// <param name="shopees"></param>
         /// <returns></returns>
-        private int GetMatcherdStock(Item laz, List<Item> shopees)
+        private int GetMatcherdLazadaNShopee(Item laz, List<Item> shopees)
         {
             if (!shopees.Any()) return laz.Stock;
 
@@ -118,21 +110,20 @@ namespace ShopHelper
         /// <param name="desc"></param>
         /// <param name="sources"></param>
         /// <param name="changed"></param>
-        private Item GetMatcherdItem(Item desc, List<Item> sources, ref bool changed)
+        private Item GetMatchedShopeeNShopee(Item desc, List<Item> sources, ref bool changed)
         {
-            if (desc.AltName != null)
+            var matched = _sources.FirstOrDefault(s => string.CompareOrdinal(s.Name, desc.Name) == 0);
+            if (matched != null && desc.AltName != null)
             {
-                changed = true;
-                var alt = sources.OrderBy(s => CompareHelper.Compare(desc.AltName, s.AltName?? "")).FirstOrDefault();
+                var alt = sources.Where(s => s.Name == matched.Name).OrderBy(s => CompareHelper.Compare(desc.AltName, s.AltName ?? "")).FirstOrDefault();
                 if (alt != null)
                 {
+                    changed = true;
                     return alt;
                 }
             }
 
-            var matched = _sources.FirstOrDefault(s => string.CompareOrdinal(s.Name, desc.Name) == 0);
-
-            if (matched != null)
+            if (matched != null && desc.AltName == null)
             {
                 changed = true;
                 return matched;
@@ -144,15 +135,11 @@ namespace ShopHelper
 
         private void WriteShopee(string outputPath)
         {
-            try
-            {
-
-            
             var results = new List<Item>();
             foreach (var dStock in _descs)
             {
-                bool changed = true;
-                var matched = GetMatcherdItem(dStock, _sources.ToList(), ref changed);
+                bool changed = false;
+                var matched = GetMatchedShopeeNShopee(dStock, _sources.ToList(), ref changed);
                 var name = dStock.Name;
                 var stock = matched.Stock;
                 var price = matched.Price;
@@ -182,12 +169,6 @@ namespace ShopHelper
                 }
 
                 workbook.Write(stream);
-            }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
             }
 
         }

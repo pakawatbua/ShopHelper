@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -25,7 +26,6 @@ namespace ShopHelper
                     switch (_type)
                     {
                         case Common.Type.Stock:
-                            return GetShopeeStock(path);
                         case Common.Type.Price:
                             return GetShopeePrice(path);
                         default:
@@ -40,11 +40,34 @@ namespace ShopHelper
                             return GetLazadaPrice(path);
                         case Common.Type.Product:
                             return GetLazadaProduct(path);
+                        case Common.Type.Sell:
+                            return GetLazadaSell(path);
                         default:
                             return null;
                     }
                 default:
                     return null;
+            }
+        }
+
+        private IEnumerable<Item> GetLazadaSell(string path)
+        {
+            XSSFWorkbook hssfwb;
+            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                hssfwb = new XSSFWorkbook(file);
+            }
+
+            ISheet sheet = hssfwb.GetSheet("sell");
+            for (int row = 1; row <= sheet.LastRowNum; row++)
+            {
+                if (sheet.GetRow(row) == null) continue;
+
+                var name = sheet.GetRow(row).GetCell(4).StringCellValue;
+                var sku = sheet.GetRow(row).GetCell(5).StringCellValue;
+                var price = decimal.Parse(sheet.GetRow(row).GetCell(7).NumericCellValue.ToString(CultureInfo.InvariantCulture));
+
+                yield return new Item() { Name = name, Price = price, SKU = sku };
             }
         }
 
@@ -94,11 +117,6 @@ namespace ShopHelper
         }
 
         private IEnumerable<Item> GetShopeePrice(string path)
-        {
-            return GetShopeeStock(path);
-        }
-
-        private IEnumerable<Item> GetShopeeStock(string path)
         {
             XSSFWorkbook hssfwb;
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))

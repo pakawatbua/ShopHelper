@@ -13,41 +13,46 @@ namespace ShopHelper
             //ComparePrice(0.3);
             //ProfitCal();
 
-            var scrPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
-            var descPart = Path.Combine(RootPath, @"Stock\Pun\stock.xlsx");
-            var outputPart = Path.Combine(RootPath, $@"Stock\Shopee\updated_{DateTime.Now.Day}.xlsx");
-            UpdateStock(Common.Shop.Shopee, Common.Shop.Shopee, scrPart, descPart, outputPart);
+            var costPath = Path.Combine(RootPath, @"Profit\Shopee\cost.xlsx");
+            var sellPath = Path.Combine(RootPath, @"Profit\Lazada\sell.xlsx");
+            var profitPath = Path.Combine(RootPath, $@"Profit\Profit\profit_{DateTime.Now.Millisecond}.xlsx");
+            CalculateProfit(Common.Shop.Shopee, Common.Shop.Lazada, costPath, sellPath, profitPath);
 
-            //var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
-            //var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
-            //var outputPart = Path.Combine(RootPath, $@"Stock\Lazada\Update\updated{DateTime.Now.Day}.xlsx");
-            //UpdateStock(Common.Shop.Lazada, Common.Shop.Shopee, scrPart, descPart, outputPart);
+            //var scrPath = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
+            //var descPath = Path.Combine(RootPath, @"Stock\Pun\stock.xlsx");
+            //var outputPath = Path.Combine(RootPath, $@"Stock\Shopee\updated_X_{DateTime.Now.Day}.xlsx");
+            //UpdateStock(Common.Shop.Shopee, Common.Shop.Shopee, scrPath, descPath, outputPath);
 
-            //var scrPart = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
-            //var descPart = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
-            //var outputPart = Path.Combine(RootPath, $@"Stock\Lazada\UnmatchedName\unmatchedName{DateTime.Now.Day}.xlsx");
-            //GetUnmatchedName(Common.Shop.Lazada, Common.Shop.Shopee, scrPart, descPart, outputPart);
+            //var scrPath = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
+            //var descPath = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
+            //var outputPath = Path.Combine(RootPath, $@"Stock\Lazada\Update\updated{DateTime.Now.Day}.xlsx");
+            //UpdateStock(Common.Shop.Lazada, Common.Shop.Shopee, scrPath, descPath, outputPath);
 
-            //var top100Part = Path.Combine(RootPath, @"Price\Lazada\Top100.xlsx");
-            //var allPart = Path.Combine(RootPath, @"Price\Lazada\all.xlsx");
-            //var outputPart = Path.Combine(RootPath, $@"Price\Lazada\Top100_{DateTime.Now.Day}.xlsx");
-            //GetTop100Price(top100Part, allPart, outputPart);
+            //var scrPath = Path.Combine(RootPath, @"Stock\Lazada\stock.xlsx");
+            //var descPath = Path.Combine(RootPath, @"Stock\Shopee\stock.xlsx");
+            //var outputPath = Path.Combine(RootPath, $@"Stock\Lazada\UnmatchedName\unmatchedName{DateTime.Now.Day}.xlsx");
+            //GetUnmatchedName(Common.Shop.Lazada, Common.Shop.Shopee, scrPath, descPath, outputPath);
+
+            //var top100Path = Path.Combine(RootPath, @"Price\Lazada\Top100.xlsx");
+            //var allPath = Path.Combine(RootPath, @"Price\Lazada\all.xlsx");
+            //var outputPath = Path.Combine(RootPath, $@"Price\Lazada\Top100_{DateTime.Now.Day}.xlsx");
+            //GetTop100Price(top100Path, allPath, outputPath);
 
 
-            //var scrPart = Path.Combine(RootPath, @"Price\Shopee\price.xlsx");
-            //var descPart = Path.Combine(RootPath, @"Price\Pun\price.xlsx");
-            //var outputPart = Path.Combine(RootPath, $@"Price\Shopee\updated{DateTime.Now.Day}.xlsx");
-            //UpdatePrice(Common.Shop.Shopee, Common.Shop.Shopee, scrPart, descPart, outputPart);
+            //var scrPath = Path.Combine(RootPath, @"Price\Shopee\price.xlsx");
+            //var descPath = Path.Combine(RootPath, @"Price\Pun\price.xlsx");
+            //var outputPath = Path.Combine(RootPath, $@"Price\Shopee\updated{DateTime.Now.Day}.xlsx");
+            //UpdatePrice(Common.Shop.Shopee, Common.Shop.Shopee, scrPath, descPath, outputPath);
         }
 
-        private static void GetTop100Price(string top100Part, string allPart, string outputPart)
+        private static void GetTop100Price(string top100Path, string allPath, string outputPath)
         {
             try
             {
-                var top100Products = new File(Common.Shop.Lazada, Common.Type.Product).Read(top100Part);
+                var top100Products = new File(Common.Shop.Lazada, Common.Type.Product).Read(top100Path);
 
                 new CampaignManager(top100Products).Write(Common.Shop.Lazada,
-                    Path.Combine(outputPart) , allPart);
+                    Path.Combine(outputPath) , allPath);
 
                 Console.WriteLine("Done!!!");
             }
@@ -59,17 +64,17 @@ namespace ShopHelper
             Console.ReadKey();
         }
 
-        private static void GetUnmatchedName(Common.Shop srcShop, Common.Shop descShop, string scrPart, string descPart,
-            string outputPart)
+        private static void GetUnmatchedName(Common.Shop srcShop, Common.Shop descShop, string scrPath, string descPath,
+            string outputPath)
         {
             try
             {
-                var sourceStock = new File(srcShop, Common.Type.Stock).Read(scrPart);
+                var sourceStock = new File(srcShop, Common.Type.Stock).Read(scrPath);
 
-                var descStock = new File(descShop, Common.Type.Stock).Read(descPart);
+                var descStock = new File(descShop, Common.Type.Stock).Read(descPath);
 
                 new UnmatchedNameManager(sourceStock, descStock).Write(srcShop,
-                    Path.Combine(outputPart));
+                    Path.Combine(outputPath));
 
                 Console.WriteLine("Done!!!");
             }
@@ -81,16 +86,16 @@ namespace ShopHelper
             Console.ReadKey();
         }
 
-        private static void UpdatePrice(Common.Shop srcShop, Common.Shop descShop, string scrPart, string descPart, string outputPart)
+        private static void UpdatePrice(Common.Shop srcShop, Common.Shop descShop, string scrPath, string descPath, string outputPath)
         {
             try
             {
-                var sourceStock = new File(srcShop, Common.Type.Price).Read(scrPart);
+                var sourceStock = new File(srcShop, Common.Type.Price).Read(scrPath);
 
-                var descStock = new File(descShop, Common.Type.Price).Read(descPart);
+                var descStock = new File(descShop, Common.Type.Price).Read(descPath);
 
                 new PriceManager(sourceStock, descStock).Write(srcShop,
-                    Path.Combine(outputPart));
+                    Path.Combine(outputPath));
 
                 Console.WriteLine("Done!!!");
             }
@@ -102,16 +107,37 @@ namespace ShopHelper
             Console.ReadKey();
         }
 
-        private static void UpdateStock(Common.Shop srcShop, Common.Shop descShop, string scrPart, string descPart, string outputPart)
+        private static void CalculateProfit(Common.Shop costShop, Common.Shop sellShop, string costPath, string sellPath, string profitPath)
         {
             try
             {
-                var sourceStock = new File(srcShop, Common.Type.Stock).Read(scrPart);
+                var cost = new File(costShop, Common.Type.Price).Read(costPath);
 
-                var descStock = new File(descShop, Common.Type.Stock).Read(descPart);
+                var sell = new File(sellShop, Common.Type.Sell).Read(sellPath);
+
+                new ProfitCalculator(cost, sell).Write(sellShop,
+                    Path.Combine(profitPath));
+
+                Console.WriteLine("Done!!!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error :" + ex.Message);
+            }
+
+            Console.ReadKey();
+        }
+
+        private static void UpdateStock(Common.Shop srcShop, Common.Shop descShop, string scrPath, string descPath, string outputPath)
+        {
+            try
+            {
+                var sourceStock = new File(srcShop, Common.Type.Stock).Read(scrPath);
+
+                var descStock = new File(descShop, Common.Type.Stock).Read(descPath);
 
                 new StockManager(sourceStock, descStock).Write(srcShop,
-                    Path.Combine(outputPart));
+                    Path.Combine(outputPath));
 
                 Console.WriteLine("Done!!!");
             }

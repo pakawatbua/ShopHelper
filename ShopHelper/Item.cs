@@ -8,6 +8,9 @@
         public decimal BasePrice { get; set; }
         public string SKU { get; set; }
         public decimal Profit { get; set; }
+        
+        public decimal Cost { get; set; }
+        public decimal Sell { get; set; }
         public bool Changed { get; set; }
         public string LazName { get; set; }
         public string ShopeeName { get; set; }
@@ -15,5 +18,6 @@
         public string Matched80Name { get; set; }
         public string Matched90Name { get; set; }
         public string AltName { get; set; }
+        public bool Matched { get; set; }
     }
 }

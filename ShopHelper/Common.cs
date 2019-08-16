@@ -19,7 +19,8 @@ namespace ShopHelper
             Stock,
             Price,
             Product,
-            CampaignPrice
+            CampaignPrice,
+            Sell
         }
     }
 }
