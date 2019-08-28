@@ -45,7 +45,10 @@ namespace ShopHelper
                     LazName = sell.Name,
                     SKU = sell.SKU,
                     Sell = sell.Price,
-                    Cost = matched.Matched ? matched.Price : sell.Price,
+                    Cost = matched.Matched ? matched.Price : 0,
+                    Matched = matched.Matched,
+                    IsOverPrice = matched.Matched? matched.Price > sell.Price : false,
+                    kingTag = matched.kingTag
                 });
             }
 
@@ -60,6 +63,9 @@ namespace ShopHelper
                 headerRow.CreateCell(1).SetCellValue("SKU");
                 headerRow.CreateCell(2).SetCellValue("Sell");
                 headerRow.CreateCell(3).SetCellValue("Cost");
+                headerRow.CreateCell(4).SetCellValue("Not Matched");
+                headerRow.CreateCell(5).SetCellValue("Over Price");
+                headerRow.CreateCell(6).SetCellValue("King Tag");
 
                 foreach (var result in results)
                 {
@@ -68,6 +74,9 @@ namespace ShopHelper
                     rowtemp.CreateCell(1).SetCellValue(result.SKU);
                     rowtemp.CreateCell(2).SetCellValue(result.Sell.ToString(CultureInfo.InvariantCulture));
                     rowtemp.CreateCell(3).SetCellValue(result.Cost.ToString(CultureInfo.InvariantCulture));
+                    rowtemp.CreateCell(4).SetCellValue(result.Matched? "": "NO");
+                    rowtemp.CreateCell(5).SetCellValue(result.IsOverPrice ? "YES" : "");
+                    rowtemp.CreateCell(6).SetCellValue(result.kingTag ? "Yes" : "");
                 }
 
                 workbook.Write(stream);

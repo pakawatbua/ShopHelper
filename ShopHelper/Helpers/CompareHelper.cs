@@ -8,6 +8,12 @@ namespace ShopHelper
 {
     public static class CompareHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
         public static int Compare(string s, string t)
         {
             int n = s.Length;

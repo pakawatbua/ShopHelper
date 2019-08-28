@@ -21,6 +21,8 @@
         public bool Matched { get; set; }
         public decimal LazPrice { get; set; }
         public decimal ShopPrice { get; set; }
-        public string IsOverPrice { get; set; }
+        public bool IsOverPrice { get; set; }
+        public bool kingTag { get; set; }
+        public decimal KingPrice { get; set; }
     }
 }

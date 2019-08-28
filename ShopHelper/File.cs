@@ -28,6 +28,8 @@ namespace ShopHelper
                         case Common.Type.Stock:
                         case Common.Type.Price:
                             return GetShopeePrice(path);
+                        case Common.Type.Cost:
+                            return GetShopeeCost(path);
                         default:
                             return null;
                     }
@@ -151,6 +153,31 @@ namespace ShopHelper
                 var altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
 
                 yield return new Item() { Name = name, Price = price, Stock = stock, AltName = altName };
+            }
+        }
+
+        private IEnumerable<Item> GetShopeeCost(string path)
+        {
+            XSSFWorkbook hssfwb;
+            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                hssfwb = new XSSFWorkbook(file);
+            }
+
+            ISheet sheet = hssfwb.GetSheet("sheet1");
+            for (int row = 2; row <= sheet.LastRowNum; row++)
+            {
+                if (sheet.GetRow(row) == null) continue;
+
+                var name = sheet.GetRow(row).GetCell(2).StringCellValue;
+                var price = decimal.Parse(sheet.GetRow(row).GetCell(15).NumericCellValue.ToString(CultureInfo.InvariantCulture));
+                var altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
+
+                var kingPriceText = sheet.GetRow(row).GetCell(10);
+                var kingPrice = kingPriceText != null ? decimal.Parse(sheet.GetRow(row).GetCell(10).NumericCellValue.ToString(CultureInfo.InvariantCulture)) : 0;
+                var kingTag = kingPrice != 0;
+
+                yield return new Item() { Name = name, Price = price, AltName = altName, KingPrice = kingPrice, kingTag = kingTag };
             }
         }
     }

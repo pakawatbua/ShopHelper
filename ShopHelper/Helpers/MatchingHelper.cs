@@ -30,31 +30,70 @@ namespace ShopHelper
 
             if (!matched.Any())
             {
+                // Source longer than desc
+                matched =
+                descs.Where(s => source.Name.ToLower().Contains(s.Name.ToLower())).ToList();
+            }
+
+            if (!matched.Any())
+            {
+                // Desc longer than source
+                matched =
+                descs.Where(s => s.Name.ToLower().Contains(source.Name.ToLower())).ToList();
+            }
+
+            if (!matched.Any())
+            {
+                // 90% match
+                matched = descs.Where(s => CompareHelper.Compare(s.Name.ToLower(), source.Name.ToLower()) < source.Name.Length * 0.1).ToList();
+            }
+
+            if (!matched.Any())
+            {
+                // 80% match
+                matched = descs.Where(s => CompareHelper.Compare(s.Name.ToLower(), source.Name.ToLower()) < source.Name.Length * 0.2).ToList();
+            }
+
+            // Not found any
+            if (!matched.Any())
+            {
                 source.Matched = false;
                 return source;
             }
 
-            var firstMatch = matched.First();
-            if (firstMatch.AltName == null)
+            // One one
+            if(matched.Count == 1)
             {
-                firstMatch.Matched = true;
-                return firstMatch;
-            }
-
-            var altMatched = matched.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(source.SKU.ToLower(), s.AltName.ToLower())).First();
-            altMatched.Matched = true;
-
-            if (altMatched.Price > (source.Price * (decimal) 1.5))
-            {
-                var altSize = Regex.Match(source.SKU, @"\d+").Value;
-                foreach (var alt in matched)
+                var firstMatch = matched.First();
+                if (firstMatch.AltName == null)
                 {
-                    alt.AltName = Regex.Match(alt.AltName, @"\d+").Value;
+                    firstMatch.Matched = true;
+                    return firstMatch;
                 }
 
-                altMatched = matched.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(altSize.ToLower(), s.AltName.ToLower())).First();
-                altMatched.Matched = true;
             }
+
+            // For fix missing
+            var fixMatched = descs.Where(s => s.AltName != null
+            && source.Name.Equals(s.Name, StringComparison.InvariantCultureIgnoreCase)
+            && source.SKU.Equals(s.AltName, StringComparison.InvariantCultureIgnoreCase)
+            ).FirstOrDefault();
+
+            if(fixMatched != null)
+            {
+                fixMatched.Matched = true;
+                return fixMatched;
+            }
+            
+            // Multiple match
+            var altSize = Regex.Match(source.SKU, @"\d+").Value;
+            foreach (var alt in matched.Where(s => s.AltName != null))
+            {
+                alt.AltName = Regex.Match(alt.AltName, @"\d+").Value;
+            }
+
+            var altMatched = matched.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(altSize.ToLower(), s.AltName.ToLower())).First();
+            altMatched.Matched = true;
 
             return altMatched;
         }

@@ -6,17 +6,22 @@ namespace ShopHelper
 {
     internal class Program
     {
-        private const string RootPath = @"C:\Users\pbuaklay\OneDrive\Shop";
+        private const string RootPath = @"C:\Users\pbuaklay\Google Drive\Shop";
 
         static void Main()
         {
             //ComparePrice(0.3);
             //ProfitCal();
 
-            var costPath = Path.Combine(RootPath, @"Price\Shopee\price.xlsx");
-            var sellPath = Path.Combine(RootPath, @"Price\Lazada\price.xlsx");
-            var profitPath = Path.Combine(RootPath, $@"Price\Result\profit_{DateTime.Now.Date.Day}.xlsx");
-            ComparePrice(Common.Shop.Shopee, Common.Shop.Lazada, costPath, sellPath, profitPath);
+            var costPath = Path.Combine(RootPath, @"Profitcal\costFinal.xlsx");
+            var sellPath = Path.Combine(RootPath, @"Profitcal\lazada\sell.xlsx");
+            var profitPath = Path.Combine(RootPath, $@"Profitcal\Profit\profit_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx");
+            CalculateProfit(Common.Shop.Shopee, Common.Shop.Lazada, costPath, sellPath, profitPath);
+
+            //var costPath = Path.Combine(RootPath, @"Price\Shopee\price.xlsx");
+            //var sellPath = Path.Combine(RootPath, @"Price\Lazada\price.xlsx");
+            //var profitPath = Path.Combine(RootPath, $@"Price\Result\profit_{DateTime.Now.Date.Day}.xlsx");
+            //ComparePrice(Common.Shop.Shopee, Common.Shop.Lazada, costPath, sellPath, profitPath);
 
             //var sourcePath = Path.Combine(RootPath, @"Profit\Shopee\cost.xlsx");
             //var descPath = Path.Combine(RootPath, @"Profit\Lazada\sell.xlsx");
@@ -116,7 +121,7 @@ namespace ShopHelper
         {
             try
             {
-                var cost = new File(costShop, Common.Type.Price).Read(costPath);
+                var cost = new File(costShop, Common.Type.Cost).Read(costPath);
 
                 var sell = new File(sellShop, Common.Type.Sell).Read(sellPath);
 

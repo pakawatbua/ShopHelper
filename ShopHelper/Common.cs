@@ -20,7 +20,8 @@ namespace ShopHelper
             Price,
             Product,
             CampaignPrice,
-            Sell
+            Sell,
+            Cost
         }
     }
 }

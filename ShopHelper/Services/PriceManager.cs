@@ -86,8 +86,8 @@ namespace ShopHelper
                     LazName = laz.Name,
                     SKU = laz.SKU,
                     LazPrice = laz.Price,
-                    ShopPrice = matched.Matched ? matched.Price : 0,
-                    IsOverPrice = (matched.Matched ? matched.Price : 0) > laz.Price ? "Yes" : "",
+                    ShopPrice = matched.Matched ? matched.Price : 0
+                    //IsOverPrice = (matched.Matched ? matched.Price : 0) > laz.Price ? "Yes" : "",
                 });
             }
 
