@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 using NPOI.XSSF.UserModel;
+using ShopHelper.Commons;
+using ShopHelper.Models;
 
 namespace ShopHelper
 {
@@ -21,35 +21,35 @@ namespace ShopHelper
 
         public void Write(Common.Shop shop, string outputPath)
         {
-            switch (shop)
-            {
-                case Common.Shop.Shopee:
-                    WriteShopee(outputPath);
-                    break;
-                case Common.Shop.Lazada:
-                    WriteLazada(outputPath);
-                    break;
-            }
-        }
-
-        private void WriteLazada(string outputPath)
-        {
             var results = new List<Item>();
 
             foreach (var sell in _sell)
             {
-                var matched = MatchingHelper.Match(MatchingHelper.MatchingType.LazToSho, sell, _cost);
-
-                results.Add(new Item()
+                try
                 {
-                    LazName = sell.Name,
-                    SKU = sell.SKU,
-                    Sell = sell.Price,
-                    Cost = matched.Matched ? matched.Price : 0,
-                    Matched = matched.Matched,
-                    IsOverPrice = matched.Matched? matched.Price > sell.Price : false,
-                    kingTag = matched.kingTag
-                });
+                    var matched = MatchingHelper.Match(sell, _cost);
+
+                var sku = shop == Common.Shop.Lazada ?
+                    sell.SKU : 
+                    sell.AltName ;
+
+                
+                    results.Add(new Item()
+                    {
+                        LazName = sell.Name,
+                        SKU = sku,
+                        Sell = sell.Price,
+                        Cost = matched.Matched ? matched.Price : 0,
+                        Matched = matched.Matched,
+                        IsOverPrice = matched.Matched ? matched.Price > sell.Price : false,
+                        kingTag = matched.kingTag,
+                        Amount = sell.Amount
+                    });
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
             }
 
             using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))
@@ -66,6 +66,7 @@ namespace ShopHelper
                 headerRow.CreateCell(4).SetCellValue("Not Matched");
                 headerRow.CreateCell(5).SetCellValue("Over Price");
                 headerRow.CreateCell(6).SetCellValue("King Tag");
+                headerRow.CreateCell(7).SetCellValue("Amount");
 
                 foreach (var result in results)
                 {
@@ -74,18 +75,14 @@ namespace ShopHelper
                     rowtemp.CreateCell(1).SetCellValue(result.SKU);
                     rowtemp.CreateCell(2).SetCellValue(result.Sell.ToString(CultureInfo.InvariantCulture));
                     rowtemp.CreateCell(3).SetCellValue(result.Cost.ToString(CultureInfo.InvariantCulture));
-                    rowtemp.CreateCell(4).SetCellValue(result.Matched? "": "NO");
+                    rowtemp.CreateCell(4).SetCellValue(result.Matched ? "" : "NO");
                     rowtemp.CreateCell(5).SetCellValue(result.IsOverPrice ? "YES" : "");
                     rowtemp.CreateCell(6).SetCellValue(result.kingTag ? "Yes" : "");
+                    rowtemp.CreateCell(7).SetCellValue(result.Amount.ToString(CultureInfo.InvariantCulture));
                 }
 
                 workbook.Write(stream);
             }
-        }
-
-        private void WriteShopee(string outputPath)
-        {
-            throw new NotImplementedException();
         }
     }
 }

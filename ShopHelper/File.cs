@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using ShopHelper.Commons;
+using ShopHelper.Models;
 
 namespace ShopHelper
 {
@@ -30,6 +31,8 @@ namespace ShopHelper
                             return GetShopeePrice(path);
                         case Common.Type.Cost:
                             return GetShopeeCost(path);
+                        case Common.Type.Sell:
+                            return GetShopeeSell(path);
                         default:
                             return null;
                     }
@@ -51,6 +54,8 @@ namespace ShopHelper
                     return null;
             }
         }
+
+        #region Lazada
 
         private IEnumerable<Item> GetLazadaSell(string path)
         {
@@ -109,7 +114,7 @@ namespace ShopHelper
                 var price = decimal.Parse(sheet.GetRow(row).GetCell(1).StringCellValue);
                 var name = sheet.GetRow(row).GetCell(5).StringCellValue;
 
-                yield return new Item() { Name = name, Price = price , SKU = sku };
+                yield return new Item() { Name = name, Price = price, SKU = sku };
             }
         }
 
@@ -130,9 +135,13 @@ namespace ShopHelper
                 var sku = sheet.GetRow(row).GetCell(0).StringCellValue;
                 var stock = int.Parse(sheet.GetRow(row).GetCell(1).StringCellValue);
 
-                yield return new Item() { Name = name, Stock = stock, SKU = sku};
+                yield return new Item() { Name = name, Stock = stock, SKU = sku };
             }
         }
+
+        #endregion
+
+        #region Shopee
 
         private IEnumerable<Item> GetShopeePrice(string path)
         {
@@ -180,5 +189,31 @@ namespace ShopHelper
                 yield return new Item() { Name = name, Price = price, AltName = altName, KingPrice = kingPrice, kingTag = kingTag };
             }
         }
+
+        private IEnumerable<Item> GetShopeeSell(string path)
+        {
+
+            XSSFWorkbook hssfwb;
+            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                hssfwb = new XSSFWorkbook(file);
+            }
+
+            ISheet sheet = hssfwb.GetSheet("orders");
+            for (int row = 1; row <= sheet.LastRowNum; row++)
+            {
+
+                if (sheet.GetRow(row) == null) continue;
+
+                var name = sheet.GetRow(row).GetCell(13).StringCellValue;
+                var price = decimal.Parse(sheet.GetRow(row).GetCell(17).StringCellValue);
+                var altName = sheet.GetRow(row).GetCell(15)?.StringCellValue;
+                var amount = int.Parse(sheet.GetRow(row).GetCell(18).NumericCellValue.ToString(CultureInfo.InvariantCulture));
+
+                yield return new Item() { Name = name ,Price = price, AltName = altName, Amount = amount };
+            }
+        }
+
+        #endregion
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NPOI.XSSF.UserModel;
+using ShopHelper.Commons;
+using ShopHelper.Models;
 
 namespace ShopHelper
 {

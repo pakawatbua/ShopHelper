@@ -1,4 +1,4 @@
-﻿namespace ShopHelper
+﻿namespace ShopHelper.Models
 {
     public class Item
     {
@@ -8,7 +8,6 @@
         public decimal BasePrice { get; set; }
         public string SKU { get; set; }
         public decimal Profit { get; set; }
-        
         public decimal Cost { get; set; }
         public decimal Sell { get; set; }
         public bool Changed { get; set; }
@@ -24,5 +23,6 @@
         public bool IsOverPrice { get; set; }
         public bool kingTag { get; set; }
         public decimal KingPrice { get; set; }
+        public int Amount { get; set; }
     }
 }

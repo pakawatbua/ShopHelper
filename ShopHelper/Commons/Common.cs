@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ShopHelper
+﻿
+namespace ShopHelper.Commons
 {
     public static class Common
     {
@@ -22,6 +17,12 @@ namespace ShopHelper
             CampaignPrice,
             Sell,
             Cost
+        }
+
+        public enum Function
+        {
+            ProfitcalLaz,
+            ProfitcalSho
         }
     }
 }

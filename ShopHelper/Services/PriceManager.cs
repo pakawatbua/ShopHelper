@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NPOI.XSSF.UserModel;
+using ShopHelper.Commons;
+using ShopHelper.Models;
+
 namespace ShopHelper
 {
     internal class PriceManager
@@ -79,7 +80,7 @@ namespace ShopHelper
 
             foreach (var laz in lazada)
             {
-                var matched = MatchingHelper.Match(MatchingHelper.MatchingType.LazToSho, laz, shopee);
+                var matched = MatchingHelper.Match(laz, shopee);
 
                 results.Add(new Item()
                 {

@@ -57,16 +57,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common.cs" />
+    <Compile Include="Commons\Common.cs" />
     <Compile Include="ComparedItem.cs" />
     <Compile Include="Helpers\CompareHelper.cs" />
     <Compile Include="File.cs" />
     <Compile Include="Interfaces\IFileManager.cs" />
-    <Compile Include="Item.cs" />
+    <Compile Include="Models\Item.cs" />
     <Compile Include="LazadaBasePriceFile.cs" />
     <Compile Include="LazadaFile.cs" />
     <Compile Include="LazadaSellListFile.cs" />
     <Compile Include="Helpers\MatchingHelper.cs" />
+    <Compile Include="Models\PathCombination.cs" />
+    <Compile Include="Program_O.cs" />
     <Compile Include="Services\PriceManager.cs" />
     <Compile Include="Services\ProfitCalculator.cs" />
     <Compile Include="ProfitFile.cs" />

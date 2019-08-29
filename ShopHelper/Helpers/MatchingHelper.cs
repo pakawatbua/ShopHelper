@@ -1,101 +1,100 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using ShopHelper.Commons;
+using ShopHelper.Models;
 
 namespace ShopHelper
 {
     public static class MatchingHelper
     {
-        public enum MatchingType
-        {
-            LazToSho,
-            ShoToSho
-        }
-
-        /// <summary>
-        /// If not exist in shopee then lazada stock
-        /// If exist shopee no alt name then shopee stock
-        /// If exist shopee have alt then pick one
-        /// </summary>
-        /// <param name="laz"></param>
-        /// <param name="shopees"></param>
-        /// <returns></returns>
-        public static Item Match(MatchingType lazToSho, Item source, IEnumerable<Item> descs)
+        public static Item Match( Item target, IEnumerable<Item> set)
         {
             var matched =
-                descs.Where(s => source.Name.Equals(s.Name, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                set.Where(s => target.Name.ToLower() == s.Name.ToLower()).ToList();
 
             if (!matched.Any())
-            {
-                // Source longer than desc
+                // target longer than set 
                 matched =
-                descs.Where(s => source.Name.ToLower().Contains(s.Name.ToLower())).ToList();
-            }
+                set.Where(s => target.Name.ToLower().Contains(s.Name.ToLower())).ToList();
 
             if (!matched.Any())
-            {
-                // Desc longer than source
+                // set longer than targert
                 matched =
-                descs.Where(s => s.Name.ToLower().Contains(source.Name.ToLower())).ToList();
+                set.Where(s => s.Name.ToLower().Contains(target.Name.ToLower())).ToList();
+
+            if (!matched.Any())
+            {
+                // 90% matched
+                matched = set.Where(s => CompareHelper.Compare(s.Name.ToLower(), target.Name.ToLower()) < target.Name.Length * 0.1).ToList();
             }
 
             if (!matched.Any())
             {
-                // 90% match
-                matched = descs.Where(s => CompareHelper.Compare(s.Name.ToLower(), source.Name.ToLower()) < source.Name.Length * 0.1).ToList();
+                // 80% matched
+                matched = set.Where(s => CompareHelper.Compare(s.Name.ToLower(), target.Name.ToLower()) < target.Name.Length * 0.2).ToList();
             }
 
+            // Not found
             if (!matched.Any())
             {
-                // 80% match
-                matched = descs.Where(s => CompareHelper.Compare(s.Name.ToLower(), source.Name.ToLower()) < source.Name.Length * 0.2).ToList();
+                target.Matched = false;
+                return target;
             }
 
-            // Not found any
-            if (!matched.Any())
-            {
-                source.Matched = false;
-                return source;
-            }
-
-            // One one
-            if(matched.Count == 1)
+            // One only no altname
+            if (matched.Count == 1)
             {
                 var firstMatch = matched.First();
-                if (firstMatch.AltName == null)
+                if (string.IsNullOrEmpty(firstMatch.AltName))
                 {
                     firstMatch.Matched = true;
                     return firstMatch;
                 }
-
             }
 
-            // For fix missing
-            var fixMatched = descs.Where(s => s.AltName != null
-            && source.Name.Equals(s.Name, StringComparison.InvariantCultureIgnoreCase)
-            && source.SKU.Equals(s.AltName, StringComparison.InvariantCultureIgnoreCase)
-            ).FirstOrDefault();
+            target.SKU = target.SKU ?? target.AltName;
 
-            if(fixMatched != null)
+            // Name and altname same [Manualy add cost]
+            var manualyMatched = set.Where(s =>
+            !string.IsNullOrEmpty(s.AltName)
+            && target.Name.Equals(s.Name, StringComparison.InvariantCultureIgnoreCase)
+            && target.SKU.Equals(s.AltName, StringComparison.InvariantCultureIgnoreCase))
+        .FirstOrDefault();
+
+            if (manualyMatched != null)
             {
-                fixMatched.Matched = true;
-                return fixMatched;
+                manualyMatched.Matched = true;
+                return manualyMatched;
             }
             
-            // Multiple match
-            var altSize = Regex.Match(source.SKU, @"\d+").Value;
-            foreach (var alt in matched.Where(s => s.AltName != null))
+
+            // Duplicate matched
+            var targetSize = Regex.Match(target.SKU, @"\d+").Value;
+            if (string.IsNullOrEmpty(targetSize) && matched.Count > 1)
             {
-                alt.AltName = Regex.Match(alt.AltName, @"\d+").Value;
+                var dupMatched = matched.OrderBy(s => s.Price).First();
+                dupMatched.Matched = true;
+                return dupMatched;
             }
 
-            var altMatched = matched.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(altSize.ToLower(), s.AltName.ToLower())).First();
-            altMatched.Matched = true;
+            // Multiple matched [Get sizing]
+            if (!string.IsNullOrEmpty(targetSize) && matched.Count > 1)
+            {
 
-            return altMatched;
+                foreach (var alt in matched.Where(s => s.AltName != null))
+                {
+                    alt.AltName = Regex.Match(alt.AltName, @"\d+").Value;
+                }
+
+                var sizeMatched = matched.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(targetSize.ToLower(), s.AltName.ToLower())).First();
+                sizeMatched.Matched = true;
+                return sizeMatched;
+            }
+
+            target.Matched = false;
+            return target;
         }
     }
 }
