@@ -42,8 +42,8 @@ namespace ShopHelper
                         Cost = matched.Matched ? matched.Price : 0,
                         Matched = matched.Matched,
                         IsOverPrice = matched.Matched ? matched.Price > sell.Price : false,
-                        kingTag = matched.kingTag,
-                        Amount = sell.Amount
+                        Amount = sell.Amount,
+                        CostType = matched.Matched ? matched.CostType : string.Empty
                     });
                 }
                 catch (Exception)
@@ -65,7 +65,7 @@ namespace ShopHelper
                 headerRow.CreateCell(3).SetCellValue("Cost");
                 headerRow.CreateCell(4).SetCellValue("Not Matched");
                 headerRow.CreateCell(5).SetCellValue("Over Price");
-                headerRow.CreateCell(6).SetCellValue("King Tag");
+                headerRow.CreateCell(6).SetCellValue("Type");
                 headerRow.CreateCell(7).SetCellValue("Amount");
 
                 foreach (var result in results)
@@ -77,7 +77,7 @@ namespace ShopHelper
                     rowtemp.CreateCell(3).SetCellValue(result.Cost.ToString(CultureInfo.InvariantCulture));
                     rowtemp.CreateCell(4).SetCellValue(result.Matched ? "" : "NO");
                     rowtemp.CreateCell(5).SetCellValue(result.IsOverPrice ? "YES" : "");
-                    rowtemp.CreateCell(6).SetCellValue(result.kingTag ? "Yes" : "");
+                    rowtemp.CreateCell(6).SetCellValue(result.CostType);
                     rowtemp.CreateCell(7).SetCellValue(result.Amount.ToString(CultureInfo.InvariantCulture));
                 }
 

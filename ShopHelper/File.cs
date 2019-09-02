@@ -182,11 +182,17 @@ namespace ShopHelper
                 var price = decimal.Parse(sheet.GetRow(row).GetCell(15).NumericCellValue.ToString(CultureInfo.InvariantCulture));
                 var altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
 
-                var kingPriceText = sheet.GetRow(row).GetCell(10);
-                var kingPrice = kingPriceText != null ? decimal.Parse(sheet.GetRow(row).GetCell(10).NumericCellValue.ToString(CultureInfo.InvariantCulture)) : 0;
-                var kingTag = kingPrice != 0;
+                var giftPrice = sheet.GetRow(row).GetCell(11)?.NumericCellValue.ToString(CultureInfo.InvariantCulture);
+                var buyPrice = sheet.GetRow(row).GetCell(12)?.NumericCellValue.ToString(CultureInfo.InvariantCulture);
+                var king20Price = sheet.GetRow(row).GetCell(13)?.NumericCellValue.ToString(CultureInfo.InvariantCulture);
+                var king10Price = sheet.GetRow(row).GetCell(14)?.NumericCellValue.ToString(CultureInfo.InvariantCulture);
+                var costType = !string.IsNullOrEmpty(buyPrice) ? "Buy" :
+                    !string.IsNullOrEmpty(giftPrice) ? "Gift" :
+                    !string.IsNullOrEmpty(king10Price) ? "King10" :
+                    !string.IsNullOrEmpty(king20Price) ? "King20" :
+                    string.Empty;
 
-                yield return new Item() { Name = name, Price = price, AltName = altName, KingPrice = kingPrice, kingTag = kingTag };
+                yield return new Item() { Name = name, Price = price, AltName = altName, CostType = costType };
             }
         }
 

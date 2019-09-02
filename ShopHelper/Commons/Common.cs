@@ -1,4 +1,6 @@
-﻿
+﻿using System.ComponentModel;
+using System.Runtime.Serialization;
+
 namespace ShopHelper.Commons
 {
     public static class Common
