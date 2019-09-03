@@ -182,14 +182,14 @@ namespace ShopHelper
                 var price = decimal.Parse(sheet.GetRow(row).GetCell(15).NumericCellValue.ToString(CultureInfo.InvariantCulture));
                 var altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
 
-                var giftPrice = sheet.GetRow(row).GetCell(11)?.NumericCellValue.ToString(CultureInfo.InvariantCulture);
-                var buyPrice = sheet.GetRow(row).GetCell(12)?.NumericCellValue.ToString(CultureInfo.InvariantCulture);
-                var king20Price = sheet.GetRow(row).GetCell(13)?.NumericCellValue.ToString(CultureInfo.InvariantCulture);
-                var king10Price = sheet.GetRow(row).GetCell(14)?.NumericCellValue.ToString(CultureInfo.InvariantCulture);
-                var costType = !string.IsNullOrEmpty(buyPrice) ? "Buy" :
-                    !string.IsNullOrEmpty(giftPrice) ? "Gift" :
-                    !string.IsNullOrEmpty(king10Price) ? "King10" :
-                    !string.IsNullOrEmpty(king20Price) ? "King20" :
+                var giftPrice = sheet.GetRow(row).GetCell(11)?.NumericCellValue;
+                var buyPrice = sheet.GetRow(row).GetCell(12)?.NumericCellValue;
+                var king20Price = sheet.GetRow(row).GetCell(13)?.NumericCellValue;
+                var king10Price = sheet.GetRow(row).GetCell(14)?.NumericCellValue;
+                var costType = (buyPrice != 0 && buyPrice != null) ? "Buy" :
+                    (giftPrice != 0 && giftPrice != null) ? "Gift" :
+                    (king10Price != 0 && king10Price != null) ? "King10" :
+                    (king20Price != 0 && king20Price != null) ? "King20" :
                     string.Empty;
 
                 yield return new Item() { Name = name, Price = price, AltName = altName, CostType = costType };
