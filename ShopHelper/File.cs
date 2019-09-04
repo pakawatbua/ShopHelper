@@ -23,10 +23,12 @@ namespace ShopHelper
         {
             switch (_shop)
             {
+                case Common.Shop.BYM:
                 case Common.Shop.Shopee:
                     switch (_type)
                     {
                         case Common.Type.Stock:
+                            return GetShopeeStock(path);
                         case Common.Type.Price:
                             return GetShopeePrice(path);
                         case Common.Type.Cost:
@@ -144,6 +146,16 @@ namespace ShopHelper
         #region Shopee
 
         private IEnumerable<Item> GetShopeePrice(string path)
+        {
+            return GetShopee(path);
+        }
+
+        private IEnumerable<Item> GetShopeeStock(string path)
+        {
+            return GetShopee(path);
+        }
+
+        private IEnumerable<Item> GetShopee(string path)
         {
             XSSFWorkbook hssfwb;
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))

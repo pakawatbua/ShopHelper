@@ -10,22 +10,22 @@ using ShopHelper.Models;
 
 namespace ShopHelper
 {
-    internal class StockManager
+    internal class StockUpdater
     {
-        private readonly IEnumerable<Item> _sources;
-        private readonly IEnumerable<Item> _descs;
+        private readonly IEnumerable<Item> _baseStock;
+        private readonly IEnumerable<Item> _targetStock;
 
-        public StockManager(IEnumerable<Item> sources, IEnumerable<Item> descs)
+        public StockUpdater(IEnumerable<Item> baseStock, IEnumerable<Item> targetStock)
         {
-            _sources = sources;
-            _descs = descs;
+            _baseStock = baseStock;
+            _targetStock = targetStock;
         }
 
         public void Write(Common.Shop shop, string outputPath)
         {
             switch (shop)
             {
-                case Common.Shop.Shopee:
+                case Common.Shop.BYM:
                     WriteShopee(outputPath);
                     break;
                 case Common.Shop.Lazada:
@@ -38,9 +38,9 @@ namespace ShopHelper
         {
             var results = new List<Item>();
 
-            foreach (var laz in _sources)
+            foreach (var laz in _baseStock)
             {
-                var shopee = _descs.Where(
+                var shopee = _targetStock.Where(
                     s => string.Compare(s.Name, laz.Name, StringComparison.InvariantCultureIgnoreCase) == 0).ToList();
 
                 var builder = new StringBuilder();
@@ -114,7 +114,7 @@ namespace ShopHelper
         /// <param name="changed"></param>
         private Item GetMatchedShopeeNShopee(Item desc, List<Item> sources, ref bool changed)
         {
-            var matched = _sources.FirstOrDefault(s => string.CompareOrdinal(s.Name, desc.Name) == 0);
+            var matched = _baseStock.FirstOrDefault(s => string.CompareOrdinal(s.Name, desc.Name) == 0);
             if (matched != null && desc.AltName != null)
             {
                 var alt = sources.Where(s => s.Name == matched.Name).OrderBy(s => CompareHelper.Compare(desc.AltName, s.AltName ?? "")).FirstOrDefault();
@@ -138,15 +138,17 @@ namespace ShopHelper
         private void WriteShopee(string outputPath)
         {
             var results = new List<Item>();
-            foreach (var dStock in _descs)
+            foreach (var tergetStock in _targetStock)
             {
-                bool changed = false;
-                var matched = GetMatchedShopeeNShopee(dStock, _sources.ToList(), ref changed);
-                var name = dStock.Name;
-                var stock = matched.Stock;
-                var price = matched.Price;
+                var matched = MatchingHelper.Match(tergetStock, _baseStock);
 
-                results.Add(new Item() { Name = name, Stock = stock, Price = price, Changed = changed });
+                results.Add(new Item()
+                {
+                    Name = tergetStock.Name,
+                    Stock = matched.Matched ? matched.Stock : tergetStock.Stock,
+                    Price = matched.Matched ? matched.Price : tergetStock.Price,
+                    Matched = matched.Matched
+                });
             }
 
             using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))
@@ -159,7 +161,7 @@ namespace ShopHelper
                 headerRow.CreateCell(0).SetCellValue("Name");
                 headerRow.CreateCell(1).SetCellValue("Price");
                 headerRow.CreateCell(2).SetCellValue("Stock");
-                headerRow.CreateCell(3).SetCellValue("Changed");
+                headerRow.CreateCell(3).SetCellValue("Matched");
 
                 foreach (var result in results)
                 {
@@ -167,7 +169,7 @@ namespace ShopHelper
                     rowtemp.CreateCell(0).SetCellValue(result.Name);
                     rowtemp.CreateCell(1).SetCellValue(result.Price.ToString(CultureInfo.InvariantCulture));
                     rowtemp.CreateCell(2).SetCellValue(result.Stock.ToString(CultureInfo.InvariantCulture));
-                    rowtemp.CreateCell(3).SetCellValue(result.Changed);
+                    rowtemp.CreateCell(3).SetCellValue(result.Matched);
                 }
 
                 workbook.Write(stream);

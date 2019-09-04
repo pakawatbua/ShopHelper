@@ -14,6 +14,8 @@ namespace ShopHelper
             Console.WriteLine("Enter fucntion : ");
             Console.WriteLine("Profit calculation 'Lazada' press 0");
             Console.WriteLine("Profit calculation 'Shopee' press 1");
+            Console.WriteLine("Update stock 'BYM' press 2");
+
 
             Common.Function fucntion;
             Enum.TryParse(Console.ReadLine(), out fucntion);
@@ -36,6 +38,14 @@ namespace ShopHelper
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
                         Path.Combine(RootPath, @"Functions\ProfitcalSho\sell.xlsx"),
                         Path.Combine(RootPath, $@"Functions\ProfitcalSho\profit_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx"))));
+
+                    break;
+                case Common.Function.UpdateStockBYM:
+                    Run(() => UpdateStockBYM(
+                            new PathCombination(
+                        Path.Combine(RootPath, @"Functions\UpdateStockBYM\shoStock.xlsx"),
+                        Path.Combine(RootPath, @"Functions\UpdateStockBYM\bymStock.xlsx"),
+                        Path.Combine(RootPath, $@"Functions\UpdateStockBYM\updatedBYMStock_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 default:
@@ -77,6 +87,16 @@ namespace ShopHelper
             var sell = new File(Common.Shop.Shopee, Common.Type.Sell).Read(paths.SecoundPath);
 
             new ProfitCalculator(cost, sell).Write(Common.Shop.Shopee, Path.Combine(paths.OutPutPath));
+        }
+
+        private static void UpdateStockBYM(PathCombination paths)
+        {
+            Console.WriteLine("Updateiong stock of BYM...");
+
+            var baseStock = new File(Common.Shop.Shopee, Common.Type.Stock).Read(paths.FirstPath);
+            var targetStock = new File(Common.Shop.BYM, Common.Type.Stock).Read(paths.SecoundPath);
+
+            new StockUpdater(baseStock, targetStock).Write(Common.Shop.BYM, Path.Combine(paths.OutPutPath));
         }
     }
 }

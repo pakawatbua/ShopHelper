@@ -8,7 +8,8 @@ namespace ShopHelper.Commons
         public enum Shop
         {
             Lazada,
-            Shopee
+            Shopee,
+            BYM
         }
 
         public enum Type
@@ -24,7 +25,8 @@ namespace ShopHelper.Commons
         public enum Function
         {
             ProfitcalLaz,
-            ProfitcalSho
+            ProfitcalSho,
+            UpdateStockBYM
         }
     }
 }
