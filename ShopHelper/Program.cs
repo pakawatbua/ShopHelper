@@ -52,7 +52,7 @@ namespace ShopHelper
                     Run(() => UpdateStockLaz(
                             new PathCombination(
                         Path.Combine(RootPath, @"Functions\UpdateStockLaz\shoStock.xlsx"),
-                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock.xlsx"),
+                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock_test.xlsx"),
                         Path.Combine(RootPath, $@"Functions\UpdateStockLaz\updatedLazStock_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
