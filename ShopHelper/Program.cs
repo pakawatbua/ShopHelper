@@ -15,7 +15,7 @@ namespace ShopHelper
             Console.WriteLine("Profit calculation 'Lazada' press 0");
             Console.WriteLine("Profit calculation 'Shopee' press 1");
             Console.WriteLine("Update stock 'BYM' press 2");
-
+            Console.WriteLine("Update stock 'Laz' press 3");
 
             Common.Function fucntion;
             Enum.TryParse(Console.ReadLine(), out fucntion);
@@ -46,6 +46,14 @@ namespace ShopHelper
                         Path.Combine(RootPath, @"Functions\UpdateStockBYM\shoStock.xlsx"),
                         Path.Combine(RootPath, @"Functions\UpdateStockBYM\bymStock.xlsx"),
                         Path.Combine(RootPath, $@"Functions\UpdateStockBYM\updatedBYMStock_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx"))));
+
+                    break;
+                case Common.Function.UpdateStockLaz:
+                    Run(() => UpdateStockLaz(
+                            new PathCombination(
+                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\shoStock.xlsx"),
+                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock.xlsx"),
+                        Path.Combine(RootPath, $@"Functions\UpdateStockLaz\updatedLazStock_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 default:
@@ -97,6 +105,16 @@ namespace ShopHelper
             var targetStock = new File(Common.Shop.BYM, Common.Type.Stock).Read(paths.SecoundPath);
 
             new StockUpdater(baseStock, targetStock).Write(Common.Shop.BYM, Path.Combine(paths.OutPutPath));
+        }
+
+        private static void UpdateStockLaz(PathCombination paths)
+        {
+            Console.WriteLine("Updateiong stock of Laz...");
+
+            var baseStock = new File(Common.Shop.Shopee, Common.Type.Stock).Read(paths.FirstPath);
+            var targetStock = new File(Common.Shop.Lazada, Common.Type.Stock).Read(paths.SecoundPath);
+
+            new StockUpdater(baseStock, targetStock).Write(Common.Shop.Lazada, Path.Combine(paths.OutPutPath));
         }
     }
 }

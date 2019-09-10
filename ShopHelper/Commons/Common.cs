@@ -26,7 +26,8 @@ namespace ShopHelper.Commons
         {
             ProfitcalLaz,
             ProfitcalSho,
-            UpdateStockBYM
+            UpdateStockBYM,
+            UpdateStockLaz
         }
     }
 }

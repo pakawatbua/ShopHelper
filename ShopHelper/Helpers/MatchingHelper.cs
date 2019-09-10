@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ShopHelper.Commons;
 using ShopHelper.Models;
 
 namespace ShopHelper
@@ -54,7 +53,7 @@ namespace ShopHelper
                 }
             }
 
-            target.SKU = target.SKU ?? target.AltName;
+            target.SKU = target.SKU ?? target.AltName ?? "";
 
             // Name and altname same [Manualy add cost]
             var manualyMatched = set.Where(s =>
@@ -68,11 +67,10 @@ namespace ShopHelper
                 manualyMatched.Matched = true;
                 return manualyMatched;
             }
-            
 
             // Duplicate matched
-            var targetSize = Regex.Match(target.SKU, @"\d+").Value;
-            if (string.IsNullOrEmpty(targetSize) && matched.Count > 1)
+            var targetSize = string.IsNullOrEmpty(target.SKU) ? null : Regex.Match(target.SKU, @"\d+").Value;
+            if (string.IsNullOrEmpty(targetSize) && matched.Any())
             {
                 var dupMatched = matched.OrderBy(s => s.Price).First();
                 dupMatched.Matched = true;
@@ -80,8 +78,16 @@ namespace ShopHelper
             }
 
             // Multiple matched [Get sizing]
-            if (!string.IsNullOrEmpty(targetSize) && matched.Count > 1)
+            if (!string.IsNullOrEmpty(targetSize) && matched.Any())
             {
+                // Duplicate matched but target has sku
+
+                if(matched.All(x => string.IsNullOrEmpty(x.AltName)))
+                {
+                    var moreMath = matched.OrderByDescending(x => x.Stock).First();
+                    moreMath.Matched = true;
+                    return moreMath;
+                }
 
                 foreach (var alt in matched.Where(s => s.AltName != null))
                 {

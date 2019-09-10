@@ -37,53 +37,50 @@ namespace ShopHelper
         private void WriteLazada(string outputPath)
         {
             var results = new List<Item>();
-
-            foreach (var laz in _baseStock)
+            try
             {
-                var shopee = _targetStock.Where(
-                    s => string.Compare(s.Name, laz.Name, StringComparison.InvariantCultureIgnoreCase) == 0).ToList();
-
-                var builder = new StringBuilder();
-
-                if (shopee.Count > 1)
+                foreach (var tergetStock in _targetStock)
                 {
-                    shopee.ForEach(x => builder.Append($"{x.AltName} : {x.Stock}, "));
+                    var matched = MatchingHelper.Match(tergetStock, _baseStock);
+
+                    results.Add(new Item()
+                    {
+                        Name = tergetStock.Name,
+                        Stock = matched.Matched ? matched.Stock : tergetStock.Stock,
+                        Price = matched.Matched ? matched.Price : tergetStock.Price,
+                        Matched = matched.Matched
+                    });
                 }
 
-                results.Add(new Item()
+                using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))
                 {
-                    LazName = laz.Name,
-                    SKU = laz.SKU,
-                    Stock = GetMatcherdLazadaNShopee(laz, shopee),
-                    Changed = shopee.Count != 0,
-                    AltName = builder.ToString()
-                });
+                    var workbook = new XSSFWorkbook();
+                    var sheet = workbook.CreateSheet("sheet1");
+                    var row = 0;
+
+                    var headerRow = sheet.CreateRow(row);
+                    headerRow.CreateCell(0).SetCellValue("Name");
+                    headerRow.CreateCell(1).SetCellValue("Price");
+                    headerRow.CreateCell(2).SetCellValue("Stock");
+                    headerRow.CreateCell(3).SetCellValue("Matched");
+
+                    foreach (var result in results)
+                    {
+                        var rowtemp = sheet.CreateRow(++row);
+                        rowtemp.CreateCell(0).SetCellValue(result.Name);
+                        rowtemp.CreateCell(1).SetCellValue(result.Price.ToString(CultureInfo.InvariantCulture));
+                        rowtemp.CreateCell(2).SetCellValue(result.Stock.ToString(CultureInfo.InvariantCulture));
+                        rowtemp.CreateCell(3).SetCellValue(!result.Matched ? "NO" : string.Empty);
+                    }
+
+                    workbook.Write(stream);
+                }
+
             }
-
-            using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))
+            catch (Exception)
             {
-                var workbook = new XSSFWorkbook();
-                var sheet = workbook.CreateSheet("sheet1");
-                var row = 0;
 
-                var headerRow = sheet.CreateRow(row);
-                headerRow.CreateCell(0).SetCellValue("lazName");
-                headerRow.CreateCell(1).SetCellValue("SKU");
-                headerRow.CreateCell(2).SetCellValue("Stock");
-                headerRow.CreateCell(3).SetCellValue("Changed");
-                headerRow.CreateCell(4).SetCellValue("AltName");
-
-                foreach (var result in results)
-                {
-                    var rowtemp = sheet.CreateRow(++row);
-                    rowtemp.CreateCell(0).SetCellValue(result.LazName);
-                    rowtemp.CreateCell(1).SetCellValue(result.SKU);
-                    rowtemp.CreateCell(2).SetCellValue(result.Stock.ToString(CultureInfo.InvariantCulture));
-                    rowtemp.CreateCell(3).SetCellValue(result.Changed);
-                    rowtemp.CreateCell(4).SetCellValue(result.AltName);
-                }
-
-                workbook.Write(stream);
+                throw;
             }
         }
 
@@ -174,7 +171,6 @@ namespace ShopHelper
 
                 workbook.Write(stream);
             }
-
         }
     }
 }
