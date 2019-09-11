@@ -62,7 +62,7 @@ namespace ShopHelper
                 headerRow.CreateCell(1).SetCellValue("SKU");
                 headerRow.CreateCell(2).SetCellValue("Sell");
                 headerRow.CreateCell(3).SetCellValue("Cost");
-                headerRow.CreateCell(4).SetCellValue("Not Matched");
+                headerRow.CreateCell(4).SetCellValue("Matched");
                 headerRow.CreateCell(5).SetCellValue("Over Price");
                 headerRow.CreateCell(6).SetCellValue("Type");
                 headerRow.CreateCell(7).SetCellValue("Amount");

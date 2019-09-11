@@ -29,15 +29,15 @@ namespace ShopHelper
                             new PathCombination(
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
                         Path.Combine(RootPath, @"Functions\ProfitcalLaz\sell.xlsx"),
-                        Path.Combine(RootPath, $@"Functions\ProfitcalLaz\profit_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx"))));
+                        Path.Combine(RootPath, $@"Functions\ProfitcalLaz\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 case Common.Function.ProfitcalSho:
                     Run(() => CalculateProfitSho(
                             new PathCombination(
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
-                        Path.Combine(RootPath, @"Functions\ProfitcalSho\sell.xlsx"),
-                        Path.Combine(RootPath, $@"Functions\ProfitcalSho\profit_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx"))));
+                        Path.Combine(RootPath, @"Functions\ProfitcalSho\sell_8.xlsx"),
+                        Path.Combine(RootPath, $@"Functions\ProfitcalSho\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 case Common.Function.UpdateStockBYM:
@@ -45,7 +45,7 @@ namespace ShopHelper
                             new PathCombination(
                         Path.Combine(RootPath, @"Functions\UpdateStockBYM\shoStock.xlsx"),
                         Path.Combine(RootPath, @"Functions\UpdateStockBYM\bymStock.xlsx"),
-                        Path.Combine(RootPath, $@"Functions\UpdateStockBYM\updatedBYMStock_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx"))));
+                        Path.Combine(RootPath, $@"Functions\UpdateStockBYM\updatedBYMStock_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 case Common.Function.UpdateStockLaz:
@@ -53,7 +53,7 @@ namespace ShopHelper
                             new PathCombination(
                         Path.Combine(RootPath, @"Functions\UpdateStockLaz\shoStock.xlsx"),
                         Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock_test.xlsx"),
-                        Path.Combine(RootPath, $@"Functions\UpdateStockLaz\updatedLazStock_{new Random().Next()}_{DateTime.Now.Date.Day}.xlsx"))));
+                        Path.Combine(RootPath, $@"Functions\UpdateStockLaz\updatedLazStock_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 default:
