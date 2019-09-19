@@ -25,5 +25,8 @@ namespace ShopHelper.Models
         public bool IsOverPrice { get; set; }
         public int Amount { get; set; }
         public string CostType { get; set; }
+        public decimal SalePrice { get; set; }
+        public string SaleStartDate { get; set; }
+        public string SaleEndDate { get; set; }
     }
 }

@@ -75,6 +75,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ComparedFile.cs" />
+    <Compile Include="Services\TopSellPriceUpdater.cs" />
     <Compile Include="ShopeeFile.cs" />
     <Compile Include="Services\StockManager.cs" />
     <Compile Include="Services\UnmatchedNameManager.cs" />

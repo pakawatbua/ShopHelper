@@ -1,5 +1,6 @@
 using ShopHelper.Commons;
 using ShopHelper.Models;
+using ShopHelper.Services;
 using System;
 using System.IO;
 
@@ -16,6 +17,7 @@ namespace ShopHelper
             Console.WriteLine("Profit calculation 'Shopee' press 1");
             Console.WriteLine("Update stock 'BYM' press 2");
             Console.WriteLine("Update stock 'Laz' press 3");
+            Console.WriteLine("Update top sell price of 'Laz' press 4");
 
             Common.Function fucntion;
             Enum.TryParse(Console.ReadLine(), out fucntion);
@@ -54,6 +56,14 @@ namespace ShopHelper
                         Path.Combine(RootPath, @"Functions\UpdateStockLaz\shoStock.xlsx"),
                         Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock_test.xlsx"),
                         Path.Combine(RootPath, $@"Functions\UpdateStockLaz\updatedLazStock_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
+
+                    break;
+                case Common.Function.TopSellPricingLaz:
+                    Run(() => UpdateTopSellPriceLaz(
+                            new PathCombination(
+                        Path.Combine(RootPath, @"Functions\TopSellpricing\Top100.xlsx"),
+                        Path.Combine(RootPath, @"Functions\TopSellpricing\LazPrice.xlsx"),
+                        Path.Combine(RootPath, $@"Functions\TopSellpricing\top100pricing_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 default:
@@ -115,6 +125,16 @@ namespace ShopHelper
             var targetStock = new File(Common.Shop.Lazada, Common.Type.Stock).Read(paths.SecoundPath);
 
             new StockUpdater(baseStock, targetStock).Write(Common.Shop.Lazada, Path.Combine(paths.OutPutPath));
+        }
+
+        private static void UpdateTopSellPriceLaz(PathCombination paths)
+        {
+            Console.WriteLine("Update top sell price of Laz...");
+
+            var topSell = new File(Common.Shop.Lazada, Common.Type.TopSellPrice).Read(paths.FirstPath);
+            var basePrice = new File(Common.Shop.Lazada, Common.Type.PriceTemplate).Read(paths.SecoundPath);
+
+            new TopSellPriceUpdater(topSell, basePrice).Write(Common.Shop.Lazada, Path.Combine(paths.OutPutPath));
         }
     }
 }

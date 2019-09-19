@@ -49,6 +49,10 @@ namespace ShopHelper
                             return GetLazadaProduct(path);
                         case Common.Type.Sell:
                             return GetLazadaSell(path);
+                        case Common.Type.TopSellPrice:
+                            return GetLazadaTop100Items(path);
+                        case Common.Type.PriceTemplate:
+                            return GetLazadaPriceTemplate(path);
                         default:
                             return null;
                     }
@@ -138,6 +142,57 @@ namespace ShopHelper
                 var stock = int.Parse(sheet.GetRow(row).GetCell(1).StringCellValue);
 
                 yield return new Item() { Name = name, Stock = stock, SKU = sku };
+            }
+        }
+
+        private IEnumerable<Item> GetLazadaTop100Items(string path)
+        {
+            XSSFWorkbook hssfwb;
+            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                hssfwb = new XSSFWorkbook(file);
+            }
+
+            ISheet sheet = hssfwb.GetSheet("สินค้า");
+            for (int row = 1; row <= sheet.LastRowNum; row++)
+            {
+                if (sheet.GetRow(row) == null) continue;
+
+                var name = sheet.GetRow(row).GetCell(0).StringCellValue;
+                var sku = sheet.GetRow(row).GetCell(1).StringCellValue;
+
+                yield return new Item() { Name = name, SKU = sku };
+            }
+        }
+
+        private IEnumerable<Item> GetLazadaPriceTemplate(string path)
+        {
+            XSSFWorkbook hssfwb;
+            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                hssfwb = new XSSFWorkbook(file);
+            }
+
+            ISheet sheet = hssfwb.GetSheet("template");
+            for (int row = 1; row <= sheet.LastRowNum; row++)
+            {
+                if (sheet.GetRow(row) == null) continue;
+
+                var sku = sheet.GetRow(row).GetCell(0).StringCellValue;
+                var price = decimal.Parse(sheet.GetRow(row).GetCell(1).StringCellValue);
+                var salePrice = decimal.Parse(sheet.GetRow(row).GetCell(2).StringCellValue);
+                var saleStartDate = sheet.GetRow(row).GetCell(3).StringCellValue;
+                var saleEndDate = sheet.GetRow(row).GetCell(4).StringCellValue;
+                var name = sheet.GetRow(row).GetCell(5).StringCellValue;
+
+                yield return new Item() {
+                    SKU = sku,
+                    Price = price,
+                    SalePrice = salePrice,
+                    SaleStartDate = saleStartDate,
+                    SaleEndDate = saleEndDate,
+                    Name = name
+                };
             }
         }
 

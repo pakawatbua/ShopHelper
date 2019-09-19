@@ -110,5 +110,18 @@ namespace ShopHelper
             target.Matched = false;
             return target;
         }
+
+        public static Item MatchSku( Item target, IEnumerable<Item> set)
+        {
+            var matched = set.FirstOrDefault(s => target.SKU.ToLower() == s.SKU.ToLower());
+
+            if(matched != null)
+            {
+                matched.Matched = true;
+                return matched;
+            }
+
+            return target;
+        }
     }
 }

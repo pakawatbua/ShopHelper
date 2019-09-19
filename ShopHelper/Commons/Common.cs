@@ -19,7 +19,9 @@ namespace ShopHelper.Commons
             Product,
             CampaignPrice,
             Sell,
-            Cost
+            Cost,
+            TopSellPrice,
+            PriceTemplate
         }
 
         public enum Function
@@ -27,7 +29,8 @@ namespace ShopHelper.Commons
             ProfitcalLaz,
             ProfitcalSho,
             UpdateStockBYM,
-            UpdateStockLaz
+            UpdateStockLaz,
+            TopSellPricingLaz
         }
     }
 }

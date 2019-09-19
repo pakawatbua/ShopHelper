@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using NPOI.XSSF.UserModel;
 using ShopHelper.Commons;
 using ShopHelper.Models;
@@ -37,50 +36,42 @@ namespace ShopHelper
         private void WriteLazada(string outputPath)
         {
             var results = new List<Item>();
-            try
+
+            foreach (var tergetStock in _targetStock)
             {
-                foreach (var tergetStock in _targetStock)
+                var matched = MatchingHelper.Match(tergetStock, _baseStock);
+
+                results.Add(new Item()
                 {
-                    var matched = MatchingHelper.Match(tergetStock, _baseStock);
-
-                    results.Add(new Item()
-                    {
-                        Name = tergetStock.Name,
-                        Stock = matched.Matched ? matched.Stock : tergetStock.Stock,
-                        Price = matched.Matched ? matched.Price : tergetStock.Price,
-                        Matched = matched.Matched
-                    });
-                }
-
-                using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))
-                {
-                    var workbook = new XSSFWorkbook();
-                    var sheet = workbook.CreateSheet("sheet1");
-                    var row = 0;
-
-                    var headerRow = sheet.CreateRow(row);
-                    headerRow.CreateCell(0).SetCellValue("Name");
-                    headerRow.CreateCell(1).SetCellValue("Price");
-                    headerRow.CreateCell(2).SetCellValue("Stock");
-                    headerRow.CreateCell(3).SetCellValue("Matched");
-
-                    foreach (var result in results)
-                    {
-                        var rowtemp = sheet.CreateRow(++row);
-                        rowtemp.CreateCell(0).SetCellValue(result.Name);
-                        rowtemp.CreateCell(1).SetCellValue(result.Price.ToString(CultureInfo.InvariantCulture));
-                        rowtemp.CreateCell(2).SetCellValue(result.Stock.ToString(CultureInfo.InvariantCulture));
-                        rowtemp.CreateCell(3).SetCellValue(!result.Matched ? "NO" : string.Empty);
-                    }
-
-                    workbook.Write(stream);
-                }
-
+                    Name = tergetStock.Name,
+                    Stock = matched.Matched ? matched.Stock : tergetStock.Stock,
+                    Price = matched.Matched ? matched.Price : tergetStock.Price,
+                    Matched = matched.Matched
+                });
             }
-            catch (Exception)
-            {
 
-                throw;
+            using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))
+            {
+                var workbook = new XSSFWorkbook();
+                var sheet = workbook.CreateSheet("sheet1");
+                var row = 0;
+
+                var headerRow = sheet.CreateRow(row);
+                headerRow.CreateCell(0).SetCellValue("Name");
+                headerRow.CreateCell(1).SetCellValue("Price");
+                headerRow.CreateCell(2).SetCellValue("Stock");
+                headerRow.CreateCell(3).SetCellValue("Matched");
+
+                foreach (var result in results)
+                {
+                    var rowtemp = sheet.CreateRow(++row);
+                    rowtemp.CreateCell(0).SetCellValue(result.Name);
+                    rowtemp.CreateCell(1).SetCellValue(result.Price.ToString(CultureInfo.InvariantCulture));
+                    rowtemp.CreateCell(2).SetCellValue(result.Stock.ToString(CultureInfo.InvariantCulture));
+                    rowtemp.CreateCell(3).SetCellValue(!result.Matched ? "NO" : string.Empty);
+                }
+
+                workbook.Write(stream);
             }
         }
 
