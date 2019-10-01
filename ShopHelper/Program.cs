@@ -63,6 +63,7 @@ namespace ShopHelper
                             new PathCombination(
                         Path.Combine(RootPath, @"Functions\TopSellpricing\Top100.xlsx"),
                         Path.Combine(RootPath, @"Functions\TopSellpricing\LazPrice.xlsx"),
+                        Path.Combine(RootPath, @"Keep\Cost.xlsx"),
                         Path.Combine(RootPath, $@"Functions\TopSellpricing\top100pricing_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
@@ -133,8 +134,9 @@ namespace ShopHelper
 
             var topSell = new File(Common.Shop.Lazada, Common.Type.TopSellPrice).Read(paths.FirstPath);
             var basePrice = new File(Common.Shop.Lazada, Common.Type.PriceTemplate).Read(paths.SecoundPath);
+            var cost = new File(Common.Shop.Shopee, Common.Type.Cost).Read(paths.ThirdPath);
 
-            new TopSellPriceUpdater(topSell, basePrice).Write(Common.Shop.Lazada, Path.Combine(paths.OutPutPath));
+            new TopSellPriceUpdater(topSell, basePrice, cost).Write(Common.Shop.Lazada, Path.Combine(paths.OutPutPath));
         }
     }
 }

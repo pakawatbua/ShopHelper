@@ -11,13 +11,13 @@ namespace ShopHelper
         public static Item Match( Item target, IEnumerable<Item> set)
         {
             var matched =
-                set.Where(s => target.Name.ToLower() == s.Name.ToLower()).ToList();
+                set.Where(s => target.Name.GetName() == s.Name.GetName()).ToList();
 
             var matched_targetLonger =
-                set.Where(s => target.Name.ToLower().Contains(s.Name.ToLower())).ToList();
+                set.Where(s => target.Name.GetName().Contains(s.Name.GetName())).ToList();
 
             var matched_setLonger =
-                set.Where(s => s.Name.ToLower().Contains(target.Name.ToLower())).ToList();
+                set.Where(s => s.Name.GetName().Contains(target.Name.GetName())).ToList();
 
             if(matched.Any() && matched_targetLonger.Any() &&
                 (matched_targetLonger.Count > matched.Count))
@@ -34,13 +34,13 @@ namespace ShopHelper
             if (!matched.Any())
             {
                 // 90% matched
-                matched = set.Where(s => CompareHelper.Compare(s.Name.ToLower(), target.Name.ToLower()) < target.Name.Length * 0.1).ToList();
+                matched = set.Where(s => CompareHelper.Compare(s.Name.GetName(), target.Name.GetName()) < target.Name.Length * 0.1).ToList();
             }
 
             if (!matched.Any())
             {
                 // 80% matched
-                matched = set.Where(s => CompareHelper.Compare(s.Name.ToLower(), target.Name.ToLower()) < target.Name.Length * 0.2).ToList();
+                matched = set.Where(s => CompareHelper.Compare(s.Name.GetName(), target.Name.GetName()) < target.Name.Length * 0.2).ToList();
             }
 
             // Not found
@@ -102,7 +102,7 @@ namespace ShopHelper
                     alt.AltName = Regex.Match(alt.AltName, @"\d+").Value;
                 }
 
-                var sizeMatched = matched.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(targetSize.ToLower(), s.AltName.ToLower())).First();
+                var sizeMatched = matched.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(targetSize.GetName(), s.AltName.GetName())).First();
                 sizeMatched.Matched = true;
                 return sizeMatched;
             }
@@ -111,9 +111,9 @@ namespace ShopHelper
             return target;
         }
 
-        public static Item MatchSku( Item target, IEnumerable<Item> set)
+        public static Item MatchSku(Item target, IEnumerable<Item> set)
         {
-            var matched = set.FirstOrDefault(s => target.SKU.ToLower() == s.SKU.ToLower());
+            var matched = set.FirstOrDefault(s => target.SKU.GetName() == s.SKU.GetName());
 
             if(matched != null)
             {
@@ -122,6 +122,20 @@ namespace ShopHelper
             }
 
             return target;
+        }
+
+        private static string GetName(this string name)
+        {
+            var startPoint = name.IndexOf("[ ");
+            var endPoint = name.IndexOf(" ]");
+
+            if (startPoint > -1 && endPoint > -1)
+            {
+                int length = endPoint - startPoint -2;
+
+                return name.Substring(startPoint + 2, length).Trim().GetName();
+            }
+            return name;
         }
     }
 }

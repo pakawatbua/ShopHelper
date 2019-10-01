@@ -12,11 +12,13 @@ namespace ShopHelper.Services
     {
         private readonly IEnumerable<Item> _topSell;
         private readonly IEnumerable<Item> _basePrice;
+        private readonly IEnumerable<Item> _cost;
 
-        public TopSellPriceUpdater(IEnumerable<Item> topSell, IEnumerable<Item> basePrice)
+        public TopSellPriceUpdater(IEnumerable<Item> topSell, IEnumerable<Item> basePrice, IEnumerable<Item> cost)
         {
             _topSell = topSell;
             _basePrice = basePrice;
+            _cost = cost;
         }
 
         public void Write(Common.Shop shop, string outputPath)
@@ -37,6 +39,8 @@ namespace ShopHelper.Services
             {
                 var matched = MatchingHelper.MatchSku(topsell, _basePrice);
 
+                var addedCost = MatchingHelper.Match(matched, _cost);
+
                 results.Add(new Item()
                 {
                     SKU = matched.SKU,
@@ -45,7 +49,8 @@ namespace ShopHelper.Services
                     SaleStartDate = matched.SaleStartDate,
                     SaleEndDate = matched.SaleEndDate,
                     Name = matched.Name,
-                    Matched = matched.Matched
+                    Cost = addedCost.Price,
+                    Matched = addedCost.Matched,
                 });
             }
 
@@ -62,7 +67,8 @@ namespace ShopHelper.Services
                 headerRow.CreateCell(3).SetCellValue("SaleStartDate");
                 headerRow.CreateCell(4).SetCellValue("SaleEndDate");
                 headerRow.CreateCell(5).SetCellValue("Name");
-                headerRow.CreateCell(6).SetCellValue("Matched");
+                headerRow.CreateCell(6).SetCellValue("Cost");
+                headerRow.CreateCell(7).SetCellValue("Matched");
 
                 foreach (var result in results)
                 {
@@ -73,7 +79,8 @@ namespace ShopHelper.Services
                     rowtemp.CreateCell(3).SetCellValue(result.SaleStartDate);
                     rowtemp.CreateCell(4).SetCellValue(result.SaleEndDate);
                     rowtemp.CreateCell(5).SetCellValue(result.Name);
-                    rowtemp.CreateCell(6).SetCellValue(!result.Matched ? "NO" : string.Empty);
+                    rowtemp.CreateCell(6).SetCellValue(result.Cost.ToString(CultureInfo.InvariantCulture));
+                    rowtemp.CreateCell(7).SetCellValue(!result.Matched ? "NO" : string.Empty);
                 }
 
                 workbook.Write(stream);
