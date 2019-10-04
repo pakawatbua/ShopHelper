@@ -22,6 +22,7 @@ namespace ShopHelper
         public void Write(Common.Shop shop, string outputPath)
         {
             var results = new List<Item>();
+
             try
             {
                 foreach (var sell in _sell)
@@ -48,7 +49,6 @@ namespace ShopHelper
             catch (Exception)
             {
 
-                throw;
             }
 
             using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))

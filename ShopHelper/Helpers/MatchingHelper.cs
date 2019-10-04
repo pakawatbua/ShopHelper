@@ -19,13 +19,13 @@ namespace ShopHelper
             var matched_setLonger =
                 set.Where(s => s.Name.GetName().Contains(target.Name.GetName())).ToList();
 
-            if(matched.Any() && matched_targetLonger.Any() &&
+            if(!matched.Any() && matched_targetLonger.Any() &&
                 (matched_targetLonger.Count > matched.Count))
             {
                 matched = matched_targetLonger;
             }
 
-            if (matched.Any() && matched_setLonger.Any() &&
+            if (!matched.Any() && matched_setLonger.Any() &&
                 (matched_setLonger.Count > matched.Count))
             {
                 matched = matched_setLonger;

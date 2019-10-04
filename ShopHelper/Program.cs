@@ -30,7 +30,7 @@ namespace ShopHelper
                     Run(() => CalculateProfitLaz(
                             new PathCombination(
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
-                        Path.Combine(RootPath, @"Functions\ProfitcalLaz\sell.xlsx"),
+                        Path.Combine(RootPath, @"Functions\ProfitcalLaz\test.xlsx"),
                         Path.Combine(RootPath, $@"Functions\ProfitcalLaz\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
@@ -38,7 +38,7 @@ namespace ShopHelper
                     Run(() => CalculateProfitSho(
                             new PathCombination(
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
-                        Path.Combine(RootPath, @"Functions\ProfitcalSho\sell_8.xlsx"),
+                        Path.Combine(RootPath, @"Functions\ProfitcalSho\sell_9.xlsx"),
                         Path.Combine(RootPath, $@"Functions\ProfitcalSho\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
