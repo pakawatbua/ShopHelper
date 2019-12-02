@@ -5,50 +5,45 @@ using System.IO;
 using NPOI.XSSF.UserModel;
 using ShopHelper.Commons;
 using ShopHelper.Models;
+using System.Linq;
 
 namespace ShopHelper
 {
     internal class ProfitCalculator
     {
-        private readonly IEnumerable<Item> _cost;
-        private readonly IEnumerable<Item> _sell;
+        private readonly List<Item> _cost;
+        private readonly List<Item> _sell;
 
         public ProfitCalculator(IEnumerable<Item> cost, IEnumerable<Item> sell)
         {
-            _cost = cost;
-            _sell = sell;
+            _cost = cost.ToList();
+            _sell = sell.ToList();
         }
 
         public void Write(Common.Shop shop, string outputPath)
         {
             var results = new List<Item>();
 
-            try
+            var current = new Item();
+
+            foreach (var sell in _sell)
             {
-                foreach (var sell in _sell)
-                {
-                    var matched = MatchingHelper.Match(sell, _cost);
+                var matched = MatchingHelper.Match(sell, _cost);
+                var sku = shop == Common.Shop.Lazada ?
+                    sell.SKU : 
+                    sell.AltName ;
 
-                    var sku = shop == Common.Shop.Lazada ?
-                        sell.SKU : 
-                        sell.AltName ;
-
-                        results.Add(new Item()
-                        {
-                            LazName = sell.Name,
-                            SKU = sku,
-                            Sell = sell.Price,
-                            Cost = matched.Matched ? matched.Price : 0,
-                            Matched = matched.Matched,
-                            IsOverPrice = matched.Matched ? matched.Price > sell.Price : false,
-                            Amount = sell.Amount,
-                            CostType = matched.Matched ? matched.CostType : string.Empty
-                        });
-                }
-            }
-            catch (Exception)
-            {
-
+                    results.Add(new Item()
+                    {
+                        LazName = sell.Name,
+                        SKU = sku,
+                        Sell = sell.Price,
+                        Cost = matched.Matched ? matched.Price : 0,
+                        Matched = matched.Matched,
+                        IsOverPrice = matched.Matched ? matched.Price > sell.Price : false,
+                        Amount = sell.Amount,
+                        CostType = matched.Matched ? matched.CostType : string.Empty
+                    });
             }
 
             using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))

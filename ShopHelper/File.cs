@@ -65,6 +65,7 @@ namespace ShopHelper
 
         private IEnumerable<Item> GetLazadaSell(string path)
         {
+
             XSSFWorkbook hssfwb;
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
@@ -76,9 +77,22 @@ namespace ShopHelper
             {
                 if (sheet.GetRow(row) == null) continue;
 
-                var name = sheet.GetRow(row).GetCell(4).StringCellValue;
-                var sku = sheet.GetRow(row).GetCell(5).StringCellValue;
-                var price = decimal.Parse(sheet.GetRow(row).GetCell(7).NumericCellValue.ToString(CultureInfo.InvariantCulture));
+                string name;
+                string sku;
+                decimal price;
+
+                try
+                {
+                     name = sheet.GetRow(row).GetCell(4).StringCellValue;
+                     sku = sheet.GetRow(row).GetCell(5).StringCellValue;
+                     price = decimal.Parse(sheet.GetRow(row).GetCell(7).NumericCellValue.ToString(CultureInfo.InvariantCulture));
+                }
+                catch (System.Exception)
+                {
+
+                    throw;
+                }
+                
 
                 yield return new Item() { Name = name, Price = price, SKU = sku };
             }
@@ -219,14 +233,29 @@ namespace ShopHelper
             }
 
             ISheet sheet = hssfwb.GetSheet("sheet1");
-            for (int row = 2; row <= sheet.LastRowNum; row++)
+            for (int row = 3; row <= sheet.LastRowNum; row++)
             {
                 if (sheet.GetRow(row) == null) continue;
 
-                var name = sheet.GetRow(row).GetCell(2).StringCellValue;
-                var price = decimal.Parse(sheet.GetRow(row).GetCell(6).StringCellValue);
-                var stock = int.Parse(sheet.GetRow(row).GetCell(7).StringCellValue);
-                var altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
+                string name;
+                decimal price;
+                int stock;
+                string altName;
+
+                try
+                {
+                     name = sheet.GetRow(row).GetCell(2).StringCellValue;
+                     price = decimal.Parse(sheet.GetRow(row).GetCell(6).StringCellValue);
+                     stock = int.Parse(sheet.GetRow(row).GetCell(7).StringCellValue);
+                     altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
+                }
+                catch (System.Exception)
+                {
+
+                    throw;
+                }
+
+                
 
                 yield return new Item() { Name = name, Price = price, Stock = stock, AltName = altName };
             }
@@ -245,19 +274,35 @@ namespace ShopHelper
             {
                 if (sheet.GetRow(row) == null) continue;
 
-                var name = sheet.GetRow(row).GetCell(2).StringCellValue;
-                var price = decimal.Parse(sheet.GetRow(row).GetCell(15).NumericCellValue.ToString(CultureInfo.InvariantCulture));
-                var altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
+                string name;
+                decimal price;
+                string altName;
+                double? giftPrice;
+                double? buyPrice;
+                double? king20Price;
+                double? king10Price;
+                string costType;
 
-                var giftPrice = sheet.GetRow(row).GetCell(11)?.NumericCellValue;
-                var buyPrice = sheet.GetRow(row).GetCell(12)?.NumericCellValue;
-                var king20Price = sheet.GetRow(row).GetCell(13)?.NumericCellValue;
-                var king10Price = sheet.GetRow(row).GetCell(14)?.NumericCellValue;
-                var costType = (buyPrice != 0 && buyPrice != null) ? "Buy" :
-                    (giftPrice != 0 && giftPrice != null) ? "Gift" :
-                    (king10Price != 0 && king10Price != null) ? "King10" :
-                    (king20Price != 0 && king20Price != null) ? "King20" :
-                    string.Empty;
+                try
+                {
+                    name = sheet.GetRow(row).GetCell(2).StringCellValue;
+                    price = decimal.Parse(sheet.GetRow(row).GetCell(15).NumericCellValue.ToString(CultureInfo.InvariantCulture));
+                    altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
+                    giftPrice = sheet.GetRow(row).GetCell(11)?.NumericCellValue;
+                    buyPrice = sheet.GetRow(row).GetCell(12)?.NumericCellValue;
+                    king20Price = sheet.GetRow(row).GetCell(13)?.NumericCellValue;
+                    king10Price = sheet.GetRow(row).GetCell(14)?.NumericCellValue;
+                    costType = (buyPrice != 0 && buyPrice != null) ? "Buy" :
+                        (giftPrice != 0 && giftPrice != null) ? "Gift" :
+                        (king10Price != 0 && king10Price != null) ? "King10" :
+                        (king20Price != 0 && king20Price != null) ? "King20" :
+                        string.Empty;
+                }
+                catch (System.Exception)
+                {
+
+                    throw;
+                }
 
                 yield return new Item() { Name = name, Price = price, AltName = altName, CostType = costType };
             }
