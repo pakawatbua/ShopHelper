@@ -8,7 +8,7 @@ namespace ShopHelper
 {
     internal class Program
     {
-        private const string RootPath = @"C:\Users\pbuaklay\Google Drive\Shop";
+        private const string RootPath = @"C:\Users\pbuaklay\Google Drive\Shop20";
 
         static void Main()
         {
@@ -30,7 +30,7 @@ namespace ShopHelper
                     Run(() => CalculateProfitLaz(
                             new PathCombination(
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
-                        Path.Combine(RootPath, @"Functions\ProfitcalLaz\sell11.xlsx"),
+                        Path.Combine(RootPath, @"Functions\ProfitcalLaz\sell_12.xlsx"),
                         Path.Combine(RootPath, $@"Functions\ProfitcalLaz\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;

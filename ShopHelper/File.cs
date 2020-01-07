@@ -75,7 +75,7 @@ namespace ShopHelper
             ISheet sheet = hssfwb.GetSheet("sell");
             for (int row = 1; row <= sheet.LastRowNum; row++)
             {
-                if (sheet.GetRow(row) == null) continue;
+                if (sheet.GetRow(row) == null) break;
 
                 string name;
                 string sku;
