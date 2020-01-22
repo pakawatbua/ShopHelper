@@ -38,8 +38,8 @@ namespace ShopHelper
                     Run(() => CalculateProfitSho(
                             new PathCombination(
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
-                        Path.Combine(RootPath, @"Functions\ProfitcalSho\sell_10.xlsx"),
-                        Path.Combine(RootPath, $@"Functions\ProfitcalSho\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
+                        Path.Combine(RootPath, @"Functions\ProfitcalBYM\sell_12.xlsx"),
+                        Path.Combine(RootPath, $@"Functions\ProfitcalBYM\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 case Common.Function.UpdateStockBYM:
@@ -53,8 +53,8 @@ namespace ShopHelper
                 case Common.Function.UpdateStockLaz:
                     Run(() => UpdateStockLaz(
                             new PathCombination(
-                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\shoStock_11.xlsx"),
-                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock_11.xlsx"),
+                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\shoStock_01.xlsx"),
+                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock_01.xlsx"),
                         Path.Combine(RootPath, $@"Functions\UpdateStockLaz\updatedLazStock_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;

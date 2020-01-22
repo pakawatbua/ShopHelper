@@ -249,7 +249,7 @@ namespace ShopHelper
                      stock = int.Parse(sheet.GetRow(row).GetCell(7).StringCellValue);
                      altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
                 }
-                catch (System.Exception)
+                catch (System.Exception ex)
                 {
 
                     throw;

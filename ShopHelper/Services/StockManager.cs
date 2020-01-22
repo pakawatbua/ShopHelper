@@ -11,13 +11,13 @@ namespace ShopHelper
 {
     internal class StockUpdater
     {
-        private readonly IEnumerable<Item> _baseStock;
-        private readonly IEnumerable<Item> _targetStock;
+        private readonly List<Item> _baseStock;
+        private readonly List<Item> _targetStock;
 
         public StockUpdater(IEnumerable<Item> baseStock, IEnumerable<Item> targetStock)
         {
-            _baseStock = baseStock;
-            _targetStock = targetStock;
+            _baseStock = baseStock.ToList();
+            _targetStock = targetStock.ToList();
         }
 
         public void Write(Common.Shop shop, string outputPath)
