@@ -6,6 +6,8 @@ namespace ShopHelper.Models
     {
         public string Name { get; set; }
         public decimal Price { get; set; }
+        public decimal PriceBYM { get; set; }
+        public decimal PricePlank { get; set; }
         public int Stock { get; set; }
         public decimal BasePrice { get; set; }
         public string SKU { get; set; }
@@ -28,5 +30,6 @@ namespace ShopHelper.Models
         public decimal SalePrice { get; set; }
         public string SaleStartDate { get; set; }
         public string SaleEndDate { get; set; }
+        public string Description { get; set; }
     }
 }

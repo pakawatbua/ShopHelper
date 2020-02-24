@@ -30,7 +30,8 @@ namespace ShopHelper.Commons
             ProfitcalSho,
             UpdateStockBYM,
             UpdateStockLaz,
-            TopSellPricingLaz
+            TopSellPricingLaz,
+            UpdatePriceBYM,
         }
     }
 }

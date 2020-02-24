@@ -18,6 +18,7 @@ namespace ShopHelper
             Console.WriteLine("Update stock 'BYM' press 2");
             Console.WriteLine("Update stock 'Laz' press 3");
             Console.WriteLine("Update top sell price of 'Laz' press 4");
+            Console.WriteLine("Update price 'BYM' press 5");
 
             Common.Function fucntion;
             Enum.TryParse(Console.ReadLine(), out fucntion);
@@ -30,7 +31,7 @@ namespace ShopHelper
                     Run(() => CalculateProfitLaz(
                             new PathCombination(
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
-                        Path.Combine(RootPath, @"Functions\ProfitcalLaz\sell_12.xlsx"),
+                        Path.Combine(RootPath, @"Functions\ProfitcalLaz\sell_1.xlsx"),
                         Path.Combine(RootPath, $@"Functions\ProfitcalLaz\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
@@ -53,8 +54,8 @@ namespace ShopHelper
                 case Common.Function.UpdateStockLaz:
                     Run(() => UpdateStockLaz(
                             new PathCombination(
-                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\shoStock_01.xlsx"),
-                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock_01.xlsx"),
+                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\shoStock.xlsx"),
+                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock.xlsx"),
                         Path.Combine(RootPath, $@"Functions\UpdateStockLaz\updatedLazStock_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
@@ -65,6 +66,14 @@ namespace ShopHelper
                         Path.Combine(RootPath, @"Functions\TopSellpricing\LazPrice.xlsx"),
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
                         Path.Combine(RootPath, $@"Functions\TopSellpricing\top100pricing_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
+
+                    break;
+                case Common.Function.UpdatePriceBYM:
+                    Run(() => UpdatePriceBYM(
+                            new PathCombination(
+                        Path.Combine(RootPath, @"Functions\UpdatePriceBYM\shoPrice.xlsx"),
+                        Path.Combine(RootPath, @"Functions\UpdatePriceBYM\bymPrice.xlsx"),
+                        Path.Combine(RootPath, $@"Functions\UpdatePriceBYM\updatedPriceBYM_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 default:
@@ -110,7 +119,7 @@ namespace ShopHelper
 
         private static void UpdateStockBYM(PathCombination paths)
         {
-            Console.WriteLine("Updateiong stock of BYM...");
+            Console.WriteLine("Updating stock of BYM...");
 
             var baseStock = new File(Common.Shop.Shopee, Common.Type.Stock).Read(paths.FirstPath);
             var targetStock = new File(Common.Shop.BYM, Common.Type.Stock).Read(paths.SecoundPath);
@@ -118,9 +127,19 @@ namespace ShopHelper
             new StockUpdater(baseStock, targetStock).Write(Common.Shop.BYM, Path.Combine(paths.OutPutPath));
         }
 
+        private static void UpdatePriceBYM(PathCombination paths)
+        {
+            Console.WriteLine("Updating price of BYM...");
+
+            var baseStock = new File(Common.Shop.Shopee, Common.Type.Stock).Read(paths.FirstPath);
+            var targetStock = new File(Common.Shop.BYM, Common.Type.Stock).Read(paths.SecoundPath);
+
+            new PriceUpdater(baseStock, targetStock).Write(Common.Shop.BYM, Path.Combine(paths.OutPutPath));
+        }
+
         private static void UpdateStockLaz(PathCombination paths)
         {
-            Console.WriteLine("Updateiong stock of Laz...");
+            Console.WriteLine("Updating stock of Laz...");
 
             var baseStock = new File(Common.Shop.Shopee, Common.Type.Stock).Read(paths.FirstPath);
             var targetStock = new File(Common.Shop.Lazada, Common.Type.Stock).Read(paths.SecoundPath);
@@ -130,7 +149,7 @@ namespace ShopHelper
 
         private static void UpdateTopSellPriceLaz(PathCombination paths)
         {
-            Console.WriteLine("Update top sell price of Laz...");
+            Console.WriteLine("Updating top sell price of Laz...");
 
             var topSell = new File(Common.Shop.Lazada, Common.Type.TopSellPrice).Read(paths.FirstPath);
             var basePrice = new File(Common.Shop.Lazada, Common.Type.PriceTemplate).Read(paths.SecoundPath);

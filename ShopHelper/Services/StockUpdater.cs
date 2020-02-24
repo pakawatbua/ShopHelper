@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -73,54 +72,6 @@ namespace ShopHelper
 
                 workbook.Write(stream);
             }
-        }
-
-        /// <summary>
-        /// If not exist in shopee then lazada stock
-        /// If exist shopee no alt name then shopee stock
-        /// If exist shopee have alt then pick one
-        /// </summary>
-        /// <param name="laz"></param>
-        /// <param name="shopees"></param>
-        /// <returns></returns>
-        private int GetMatcherdLazadaNShopee(Item laz, List<Item> shopees)
-        {
-            if (!shopees.Any()) return laz.Stock;
-
-            if (shopees.First().AltName == null) return shopees.First().Stock;
-
-            return shopees.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(laz.SKU, s.AltName)).First().Stock;
-        }
-
-        /// <summary>
-        /// IF alt match then matched
-        /// IF name match then matched
-        /// IF not then desc
-        /// </summary>
-        /// <param name="desc"></param>
-        /// <param name="sources"></param>
-        /// <param name="changed"></param>
-        private Item GetMatchedShopeeNShopee(Item desc, List<Item> sources, ref bool changed)
-        {
-            var matched = _baseStock.FirstOrDefault(s => string.CompareOrdinal(s.Name, desc.Name) == 0);
-            if (matched != null && desc.AltName != null)
-            {
-                var alt = sources.Where(s => s.Name == matched.Name).OrderBy(s => CompareHelper.Compare(desc.AltName, s.AltName ?? "")).FirstOrDefault();
-                if (alt != null)
-                {
-                    changed = true;
-                    return alt;
-                }
-            }
-
-            if (matched != null && desc.AltName == null)
-            {
-                changed = true;
-                return matched;
-            }
-
-            changed = false;
-            return desc;
         }
 
         private void WriteShopee(string outputPath)

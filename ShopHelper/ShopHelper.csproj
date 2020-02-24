@@ -70,6 +70,7 @@
     <Compile Include="Models\PathCombination.cs" />
     <Compile Include="Program_O.cs" />
     <Compile Include="Services\PriceManager.cs" />
+    <Compile Include="Services\PriceUpdater.cs" />
     <Compile Include="Services\ProfitCalculator.cs" />
     <Compile Include="ProfitFile.cs" />
     <Compile Include="Program.cs" />
@@ -77,7 +78,7 @@
     <Compile Include="ComparedFile.cs" />
     <Compile Include="Services\TopSellPriceUpdater.cs" />
     <Compile Include="ShopeeFile.cs" />
-    <Compile Include="Services\StockManager.cs" />
+    <Compile Include="Services\StockUpdater.cs" />
     <Compile Include="Services\UnmatchedNameManager.cs" />
     <Compile Include="CampaignManager.cs" />
   </ItemGroup>
