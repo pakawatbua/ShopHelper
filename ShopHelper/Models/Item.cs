@@ -31,5 +31,7 @@ namespace ShopHelper.Models
         public string SaleStartDate { get; set; }
         public string SaleEndDate { get; set; }
         public string Description { get; set; }
+        public string MultiStocks { get; set; }
+        public string MultiPrices { get; set; }
     }
 }

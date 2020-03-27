@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ShopHelper.Models;
 
 namespace ShopHelper
 {
@@ -57,6 +56,13 @@ namespace ShopHelper
             }
             // Step 7
             return d[n, m];
+        }
+
+        public static Item GetClosedPrice(decimal targetPrice, List<Item> sources)
+        {
+            var sourcePrice = sources.Select(x => x.Price).ToArray();
+            var closed = sourcePrice.OrderBy(s => Math.Abs(targetPrice - s)).First();
+            return sources.First(s => s.Price == closed);
         }
     }
 }
