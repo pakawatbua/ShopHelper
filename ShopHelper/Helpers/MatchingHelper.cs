@@ -8,7 +8,7 @@ namespace ShopHelper
 {
     public static class MatchingHelper
     {
-        public static Item Match(Item target, IEnumerable<Item> set)
+        public static Item Match(Item target, IEnumerable<Item> set, bool isLazada = false)
         {
             var matched =
                 set.Where(s => target.Name.GetName() == s.Name.GetName()).ToList();
@@ -105,7 +105,7 @@ namespace ShopHelper
                 var sizeMatched = matched.Where(s => s.Model != null).OrderBy(s => CompareHelper.Compare(targetSize.GetName(), s.Model.GetName())).First();
 
                 // Price so differance
-                var targetPrice = target.Price;
+                var targetPrice = isLazada ? target.Price * 95 / 100 : target.Price;
                 var matchedPrice = sizeMatched.Price;
 
                 if (Math.Abs(targetPrice - matchedPrice) > 100)

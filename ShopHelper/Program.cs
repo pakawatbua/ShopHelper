@@ -8,7 +8,7 @@ namespace ShopHelper
 {
     internal class Program
     {
-        private const string RootPath = @"C:\Users\pbuaklay\Google Drive\Shop20";
+        private const string RootPath = @"C:\Users\pek\Google Drive (pexhod@gmail.com)\Shop20";
 
         static void Main()
         {

@@ -150,12 +150,13 @@ namespace ShopHelper
             for (int row = 1; row <= sheet.LastRowNum; row++)
             {
                 if (sheet.GetRow(row) == null) continue;
-
+                
                 var name = sheet.GetRow(row).GetCell(2).StringCellValue;
                 var sku = sheet.GetRow(row).GetCell(0).StringCellValue;
-                var stock = int.Parse(sheet.GetRow(row).GetCell(1).StringCellValue);
+                var stock = int.Parse(sheet.GetRow(row).GetCell(1).ToString());
+                var price = decimal.Parse(sheet.GetRow(row).GetCell(3).ToString());
 
-                yield return new Item() { Name = name, Stock = stock, SKU = sku };
+                yield return new Item() { Name = name, Stock = stock, SKU = sku, Price = price };
             }
         }
 

@@ -38,13 +38,13 @@ namespace ShopHelper
 
             foreach (var tergetStock in _targetStock)
             {
-                var matched = MatchingHelper.Match(tergetStock, _baseStock);
+                var matched = MatchingHelper.Match(tergetStock, _baseStock, true);
 
                 results.Add(new Item()
                 {
                     Name = tergetStock.Name,
                     Model = tergetStock.SKU,
-                    MatchedModel = matched.Matched ? matched.SKU + " : " + matched.Stock : string.Empty,
+                    MatchedModel = matched.Matched &&  !string.IsNullOrEmpty(matched.Model) ? matched.Model + " : " + matched.Stock : string.Empty,
                     Stock = matched.Matched ? matched.Stock : tergetStock.Stock,
                     Matched = matched.Matched,
                     MultiStocks = matched.MultiStocks,
@@ -94,7 +94,7 @@ namespace ShopHelper
                 {
                     Name = tergetStock.Name,
                     Model = tergetStock.Model,
-                    MatchedModel = matched.Matched ? matched.Model + " : " + matched.Stock : string.Empty,
+                    MatchedModel = matched.Matched && !string.IsNullOrEmpty(matched.Model) ? matched.Model + " : " + matched.Stock : string.Empty,
                     Stock = matched.Matched ? matched.Stock : tergetStock.Stock,
                     Matched = matched.Matched,
                     MultiStocks = matched.MultiStocks,
