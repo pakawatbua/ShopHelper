@@ -20,7 +20,8 @@ namespace ShopHelper.Models
         public string Matched70Name { get; set; }
         public string Matched80Name { get; set; }
         public string Matched90Name { get; set; }
-        public string AltName { get; set; }
+        public string Model { get; set; }
+        public string MatchedModel { get; set; }
         public bool Matched { get; set; }
         public decimal LazPrice { get; set; }
         public decimal ShopPrice { get; set; }

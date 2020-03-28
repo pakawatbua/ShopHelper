@@ -31,7 +31,7 @@ namespace ShopHelper
                 var matched = MatchingHelper.Match(sell, _cost);
                 var sku = shop == Common.Shop.Lazada ?
                     sell.SKU : 
-                    sell.AltName ;
+                    sell.Model ;
 
                     results.Add(new Item()
                     {

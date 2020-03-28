@@ -43,9 +43,9 @@ namespace ShopHelper
                 results.Add(new Item()
                 {
                     Name = tergetStock.Name,
-                    AltName = tergetStock.SKU,
+                    Model = tergetStock.SKU,
+                    MatchedModel = matched.Matched ? matched.SKU + " : " + matched.Stock : string.Empty,
                     Stock = matched.Matched ? matched.Stock : tergetStock.Stock,
-                    Price = matched.Matched ? matched.Price : tergetStock.Price,
                     Matched = matched.Matched,
                     MultiStocks = matched.MultiStocks,
                     MultiPrices = matched.MultiPrices
@@ -61,7 +61,7 @@ namespace ShopHelper
                 var headerRow = sheet.CreateRow(row);
                 headerRow.CreateCell(0).SetCellValue("Name");
                 headerRow.CreateCell(1).SetCellValue("Model");
-                headerRow.CreateCell(2).SetCellValue("Price");
+                headerRow.CreateCell(2).SetCellValue("Matched Model");
                 headerRow.CreateCell(3).SetCellValue("Stock");
                 headerRow.CreateCell(4).SetCellValue("Matched");
                 headerRow.CreateCell(5).SetCellValue("MultiStocks");
@@ -71,8 +71,8 @@ namespace ShopHelper
                 {
                     var rowtemp = sheet.CreateRow(++row);
                     rowtemp.CreateCell(0).SetCellValue(result.Name);
-                    rowtemp.CreateCell(1).SetCellValue(result.AltName);
-                    rowtemp.CreateCell(2).SetCellValue(result.Price.ToString(CultureInfo.InvariantCulture));
+                    rowtemp.CreateCell(1).SetCellValue(result.Model);
+                    rowtemp.CreateCell(2).SetCellValue(result.MatchedModel);
                     rowtemp.CreateCell(3).SetCellValue(result.Stock.ToString(CultureInfo.InvariantCulture));
                     rowtemp.CreateCell(4).SetCellValue(!result.Matched ? "NO" : string.Empty);
                     rowtemp.CreateCell(5).SetCellValue(result.MultiStocks);
@@ -93,9 +93,9 @@ namespace ShopHelper
                 results.Add(new Item()
                 {
                     Name = tergetStock.Name,
-                    AltName = tergetStock.AltName,
+                    Model = tergetStock.Model,
+                    MatchedModel = matched.Matched ? matched.Model + " : " + matched.Stock : string.Empty,
                     Stock = matched.Matched ? matched.Stock : tergetStock.Stock,
-                    Price = matched.Matched ? matched.Price : tergetStock.Price,
                     Matched = matched.Matched,
                     MultiStocks = matched.MultiStocks,
                     MultiPrices = matched.MultiPrices
@@ -111,7 +111,7 @@ namespace ShopHelper
                 var headerRow = sheet.CreateRow(row);
                 headerRow.CreateCell(0).SetCellValue("Name");
                 headerRow.CreateCell(1).SetCellValue("Model");
-                headerRow.CreateCell(2).SetCellValue("Price");
+                headerRow.CreateCell(2).SetCellValue("Matched Model");
                 headerRow.CreateCell(3).SetCellValue("Stock");
                 headerRow.CreateCell(4).SetCellValue("Matched");
                 headerRow.CreateCell(5).SetCellValue("MultiStocks");
@@ -121,8 +121,8 @@ namespace ShopHelper
                 {
                     var rowtemp = sheet.CreateRow(++row);
                     rowtemp.CreateCell(0).SetCellValue(result.Name);
-                    rowtemp.CreateCell(1).SetCellValue(result.AltName);
-                    rowtemp.CreateCell(2).SetCellValue(result.Price.ToString(CultureInfo.InvariantCulture));
+                    rowtemp.CreateCell(1).SetCellValue(result.Model);
+                    rowtemp.CreateCell(2).SetCellValue(result.MatchedModel);
                     rowtemp.CreateCell(3).SetCellValue(result.Stock.ToString(CultureInfo.InvariantCulture));
                     rowtemp.CreateCell(4).SetCellValue(!result.Matched ? "NO" : string.Empty);
                     rowtemp.CreateCell(5).SetCellValue(result.MultiStocks);

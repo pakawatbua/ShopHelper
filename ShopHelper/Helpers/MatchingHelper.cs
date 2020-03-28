@@ -54,20 +54,20 @@ namespace ShopHelper
             if (matched.Count == 1)
             {
                 var firstMatch = matched.First();
-                if (string.IsNullOrEmpty(firstMatch.AltName))
+                if (string.IsNullOrEmpty(firstMatch.Model))
                 {
                     firstMatch.Matched = true;
                     return firstMatch;
                 }
             }
 
-            target.SKU = target.SKU ?? target.AltName ?? "";
+            target.SKU = target.SKU ?? target.Model ?? "";
 
             // Name and altname same [Manualy add cost]
             var manualyMatched = set.Where(s =>
-            !string.IsNullOrEmpty(s.AltName)
+            !string.IsNullOrEmpty(s.Model)
             && target.Name.Equals(s.Name, StringComparison.InvariantCultureIgnoreCase)
-            && target.SKU.Equals(s.AltName, StringComparison.InvariantCultureIgnoreCase))
+            && target.SKU.Equals(s.Model, StringComparison.InvariantCultureIgnoreCase))
         .FirstOrDefault();
 
             if (manualyMatched != null)
@@ -90,19 +90,19 @@ namespace ShopHelper
             {
                 // Duplicate matched but target has sku
 
-                if (matched.All(x => string.IsNullOrEmpty(x.AltName)))
+                if (matched.All(x => string.IsNullOrEmpty(x.Model)))
                 {
                     var moreMath = matched.OrderByDescending(x => x.Stock).First();
                     moreMath.Matched = true;
                     return moreMath;
                 }
 
-                foreach (var alt in matched.Where(s => s.AltName != null))
+                foreach (var alt in matched.Where(s => s.Model != null))
                 {
-                    alt.AltName = alt.AltName;
+                    alt.Model = alt.Model;
                 }
                 
-                var sizeMatched = matched.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(targetSize.GetName(), s.AltName.GetName())).First();
+                var sizeMatched = matched.Where(s => s.Model != null).OrderBy(s => CompareHelper.Compare(targetSize.GetName(), s.Model.GetName())).First();
 
                 // Price so differance
                 var targetPrice = target.Price;
@@ -113,8 +113,8 @@ namespace ShopHelper
                     sizeMatched = CompareHelper.GetClosedPrice(targetPrice, matched);
                 }
 
-                sizeMatched.MultiStocks = string.Join(", ", matched.Select(x => x.AltName + " : " + x.Stock));
-                sizeMatched.MultiPrices = string.Join(", ", matched.Select(x => x.AltName + " : " + x.Price));
+                sizeMatched.MultiStocks = string.Join(", ", matched.Select(x => x.Model + " : " + x.Stock));
+                sizeMatched.MultiPrices = string.Join(", ", matched.Select(x => x.Model + " : " + x.Price));
 
                 sizeMatched.Matched = true;
                 return sizeMatched;
@@ -170,20 +170,20 @@ namespace ShopHelper
             if (matched.Count == 1)
             {
                 var firstMatch = matched.First();
-                if (string.IsNullOrEmpty(firstMatch.AltName))
+                if (string.IsNullOrEmpty(firstMatch.Model))
                 {
                     firstMatch.Matched = true;
                     return firstMatch;
                 }
             }
 
-            target.SKU = target.SKU ?? target.AltName ?? "";
+            target.SKU = target.SKU ?? target.Model ?? "";
 
             // Name and altname same [Manualy add cost]
             var manualyMatched = set.Where(s =>
-            !string.IsNullOrEmpty(s.AltName)
+            !string.IsNullOrEmpty(s.Model)
             && target.Name.Equals(s.Name, StringComparison.InvariantCultureIgnoreCase)
-            && target.SKU.Equals(s.AltName, StringComparison.InvariantCultureIgnoreCase))
+            && target.SKU.Equals(s.Model, StringComparison.InvariantCultureIgnoreCase))
         .FirstOrDefault();
 
             if (manualyMatched != null)
@@ -206,19 +206,19 @@ namespace ShopHelper
             {
                 // Duplicate matched but target has sku
 
-                if(matched.All(x => string.IsNullOrEmpty(x.AltName)))
+                if(matched.All(x => string.IsNullOrEmpty(x.Model)))
                 {
                     var moreMath = matched.OrderByDescending(x => x.Stock).First();
                     moreMath.Matched = true;
                     return moreMath;
                 }
 
-                foreach (var alt in matched.Where(s => s.AltName != null))
+                foreach (var alt in matched.Where(s => s.Model != null))
                 {
-                    alt.AltName = Regex.Match(alt.AltName, @"\d+").Value;
+                    alt.Model = Regex.Match(alt.Model, @"\d+").Value;
                 }
 
-                var sizeMatched = matched.Where(s => s.AltName != null).OrderBy(s => CompareHelper.Compare(targetSize.GetName(), s.AltName.GetName())).First();
+                var sizeMatched = matched.Where(s => s.Model != null).OrderBy(s => CompareHelper.Compare(targetSize.GetName(), s.Model.GetName())).First();
                 sizeMatched.Matched = true;
                 return sizeMatched;
             }

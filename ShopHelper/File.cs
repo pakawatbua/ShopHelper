@@ -257,7 +257,7 @@ namespace ShopHelper
 
                 
 
-                yield return new Item() { Name = name, Price = price, Stock = stock, AltName = altName };
+                yield return new Item() { Name = name, Price = price, Stock = stock, Model = altName };
             }
         }
 
@@ -304,7 +304,7 @@ namespace ShopHelper
                     throw;
                 }
 
-                yield return new Item() { Name = name, Price = price, AltName = altName, CostType = costType };
+                yield return new Item() { Name = name, Price = price, Model = altName, CostType = costType };
             }
         }
 
@@ -328,7 +328,7 @@ namespace ShopHelper
                 var altName = sheet.GetRow(row).GetCell(15)?.StringCellValue;
                 var amount = int.Parse(sheet.GetRow(row).GetCell(18).NumericCellValue.ToString(CultureInfo.InvariantCulture));
 
-                yield return new Item() { Name = name ,Price = price, AltName = altName, Amount = amount };
+                yield return new Item() { Name = name ,Price = price, Model = altName, Amount = amount };
             }
         }
 
