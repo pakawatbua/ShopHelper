@@ -256,8 +256,6 @@ namespace ShopHelper
                     throw;
                 }
 
-                
-
                 yield return new Item() { Name = name, Price = price, Stock = stock, Model = altName };
             }
         }

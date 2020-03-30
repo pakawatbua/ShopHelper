@@ -41,25 +41,14 @@ namespace ShopHelper.Services
                 var result = new Item()
                 {
                     Name = tergetStock.Name,
-                    PriceBYM = tergetStock.Price,
-                    PricePlank = matched.Matched ? matched.Price : 0,
+                    Model = tergetStock.Model + " : " + tergetStock.Price,
+                    MatchedModel = matched.Matched && !string.IsNullOrEmpty(matched.Model) ? matched.Model + " : " + matched.Price : string.Empty,
                     Price = matched.Matched ? matched.Price : tergetStock.Price,
-                    Matched = matched.Matched
+                    Matched = matched.Matched,
+                    MultiPrices = matched.MultiPrices
                 };
 
                 results.Add(result);
-
-                if (result.Matched)
-                {
-                    if (result.PricePlank - result.PriceBYM >= 100)
-                    {
-                        result.Description += "Plank over BYM. Wrong Price!!";
-                    }
-                    else if (result.PriceBYM - result.PricePlank >= 100)
-                    {
-                        result.Description += "BYM over Plank. Wrong Price!!";
-                    }
-                }  
             }
 
             using (FileStream stream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write))
@@ -70,21 +59,21 @@ namespace ShopHelper.Services
 
                 var headerRow = sheet.CreateRow(row);
                 headerRow.CreateCell(0).SetCellValue("Name");
-                headerRow.CreateCell(1).SetCellValue("PriceBYM");
-                headerRow.CreateCell(2).SetCellValue("PricePlank");
+                headerRow.CreateCell(1).SetCellValue("Model");
+                headerRow.CreateCell(2).SetCellValue("MatchedModel");
                 headerRow.CreateCell(3).SetCellValue("Price");
                 headerRow.CreateCell(4).SetCellValue("Matched");
-                headerRow.CreateCell(5).SetCellValue("Description");
-
+                headerRow.CreateCell(5).SetCellValue("MultiPrices");
+           
                 foreach (var result in results)
                 {
                     var rowtemp = sheet.CreateRow(++row);
                     rowtemp.CreateCell(0).SetCellValue(result.Name);
-                    rowtemp.CreateCell(1).SetCellValue(result.PriceBYM.ToString(CultureInfo.InvariantCulture));
-                    rowtemp.CreateCell(2).SetCellValue(result.PricePlank.ToString(CultureInfo.InvariantCulture));
+                    rowtemp.CreateCell(1).SetCellValue(result.Model);
+                    rowtemp.CreateCell(2).SetCellValue(result.MatchedModel);
                     rowtemp.CreateCell(3).SetCellValue(result.Price.ToString(CultureInfo.InvariantCulture));
                     rowtemp.CreateCell(4).SetCellValue(result.Matched);
-                    rowtemp.CreateCell(5).SetCellValue(result.Description);
+                    rowtemp.CreateCell(5).SetCellValue(result.MultiPrices);
                 }
 
                 workbook.Write(stream);
