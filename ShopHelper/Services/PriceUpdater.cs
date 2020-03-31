@@ -43,9 +43,10 @@ namespace ShopHelper.Services
                     Name = tergetStock.Name,
                     Model = tergetStock.Model + " : " + tergetStock.Price,
                     MatchedModel = matched.Matched && !string.IsNullOrEmpty(matched.Model) ? matched.Model + " : " + matched.Price : string.Empty,
-                    Price = matched.Matched ? matched.Price : tergetStock.Price,
+                    Price = matched.Matched ? MatchingHelper.IsPriceSoDifferance(matched.Price, tergetStock.Price) ? tergetStock.Price : matched.Price : tergetStock.Price,
                     Matched = matched.Matched,
-                    MultiPrices = matched.MultiPrices
+                    MultiPrices = matched.MultiPrices,
+                    Description = matched.Matched ? MatchingHelper.IsPriceSoDifferance(matched.Price, tergetStock.Price) ? "Price So Differance": string.Empty : string.Empty,
                 };
 
                 results.Add(result);
@@ -64,7 +65,8 @@ namespace ShopHelper.Services
                 headerRow.CreateCell(3).SetCellValue("Price");
                 headerRow.CreateCell(4).SetCellValue("Matched");
                 headerRow.CreateCell(5).SetCellValue("MultiPrices");
-           
+                headerRow.CreateCell(6).SetCellValue("Price So Differance");
+
                 foreach (var result in results)
                 {
                     var rowtemp = sheet.CreateRow(++row);
@@ -74,6 +76,7 @@ namespace ShopHelper.Services
                     rowtemp.CreateCell(3).SetCellValue(result.Price.ToString(CultureInfo.InvariantCulture));
                     rowtemp.CreateCell(4).SetCellValue(result.Matched);
                     rowtemp.CreateCell(5).SetCellValue(result.MultiPrices);
+                    headerRow.CreateCell(6).SetCellValue(result.Description);
                 }
 
                 workbook.Write(stream);

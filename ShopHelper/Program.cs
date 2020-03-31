@@ -73,7 +73,7 @@ namespace ShopHelper
                             new PathCombination(
                         Path.Combine(RootPath, @"Functions\UpdatePriceBYM\shoPrice.xlsx"),
                         Path.Combine(RootPath, @"Functions\UpdatePriceBYM\bymPrice.xlsx"),
-                        Path.Combine(RootPath, $@"Functions\UpdatePriceBYM\updatedPriceBYM_NewMethod{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
+                        Path.Combine(RootPath, $@"Functions\UpdatePriceBYM\updatedPriceBYM_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 default:

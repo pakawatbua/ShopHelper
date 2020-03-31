@@ -124,6 +124,11 @@ namespace ShopHelper
             return target;
         }
 
+        public static bool IsPriceSoDifferance(decimal source, decimal target)
+        {
+            return Math.Abs(source - target) > 500;
+        }
+
         public static Item Match_Stable( Item target, IEnumerable<Item> set)
         {
             var matched =
