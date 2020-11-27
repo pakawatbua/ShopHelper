@@ -42,7 +42,9 @@ namespace ShopHelper
                     switch (_type)
                     {
                         case Common.Type.Stock:
-                            return GeLazadaStock(path);
+                            return GetLazadaStock(path);
+                        case Common.Type.UpgradStock:
+                            return GetLazadaUpgradeStock(path);
                         case Common.Type.Price:
                             return GetLazadaPrice(path);
                         case Common.Type.Product:
@@ -81,18 +83,9 @@ namespace ShopHelper
                 string sku;
                 decimal price;
 
-                try
-                {
-                     name = sheet.GetRow(row).GetCell(4).StringCellValue;
-                     sku = sheet.GetRow(row).GetCell(5).StringCellValue;
-                     price = decimal.Parse(sheet.GetRow(row).GetCell(7).NumericCellValue.ToString(CultureInfo.InvariantCulture));
-                }
-                catch (System.Exception)
-                {
-
-                    throw;
-                }
-                
+                name = sheet.GetRow(row).GetCell(4).StringCellValue;
+                sku = sheet.GetRow(row).GetCell(5).StringCellValue;
+                price = decimal.Parse(sheet.GetRow(row).GetCell(7).NumericCellValue.ToString(CultureInfo.InvariantCulture));
 
                 yield return new Item() { Name = name, Price = price, SKU = sku };
             }
@@ -138,7 +131,7 @@ namespace ShopHelper
             }
         }
 
-        private IEnumerable<Item> GeLazadaStock(string path)
+        private IEnumerable<Item> GetLazadaStock(string path)
         {
             XSSFWorkbook hssfwb;
             using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
@@ -150,7 +143,28 @@ namespace ShopHelper
             for (int row = 1; row <= sheet.LastRowNum; row++)
             {
                 if (sheet.GetRow(row) == null) continue;
-                
+
+                var sku = sheet.GetRow(row).GetCell(0).StringCellValue;
+                var stock = int.Parse(sheet.GetRow(row).GetCell(1).ToString());
+                var name = sheet.GetRow(row).GetCell(2).StringCellValue;
+
+                yield return new Item() { Name = name, Stock = stock, SKU = sku };
+            }
+        }
+
+        private IEnumerable<Item> GetLazadaUpgradeStock(string path)
+        {
+            XSSFWorkbook hssfwb;
+            using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+                hssfwb = new XSSFWorkbook(file);
+            }
+
+            ISheet sheet = hssfwb.GetSheet("template");
+            for (int row = 1; row <= sheet.LastRowNum; row++)
+            {
+                if (sheet.GetRow(row) == null) continue;
+
                 var name = sheet.GetRow(row).GetCell(2).StringCellValue;
                 var sku = sheet.GetRow(row).GetCell(0).StringCellValue;
                 var stock = int.Parse(sheet.GetRow(row).GetCell(1).ToString());
@@ -200,7 +214,8 @@ namespace ShopHelper
                 var saleEndDate = sheet.GetRow(row).GetCell(4).StringCellValue;
                 var name = sheet.GetRow(row).GetCell(5).StringCellValue;
 
-                yield return new Item() {
+                yield return new Item()
+                {
                     SKU = sku,
                     Price = price,
                     SalePrice = salePrice,
@@ -245,10 +260,10 @@ namespace ShopHelper
 
                 try
                 {
-                     name = sheet.GetRow(row).GetCell(2).StringCellValue;
-                     price = decimal.Parse(sheet.GetRow(row).GetCell(6).StringCellValue);
-                     stock = int.Parse(sheet.GetRow(row).GetCell(7).StringCellValue);
-                     altName = sheet.GetRow(row).GetCell(5)?.StringCellValue;
+                    name = sheet.GetRow(row).GetCell(1).StringCellValue;
+                    price = decimal.Parse(sheet.GetRow(row).GetCell(6).StringCellValue);
+                    stock = int.Parse(sheet.GetRow(row).GetCell(7).StringCellValue);
+                    altName = sheet.GetRow(row).GetCell(3)?.StringCellValue;
                 }
                 catch (System.Exception ex)
                 {
@@ -327,7 +342,7 @@ namespace ShopHelper
                 var altName = sheet.GetRow(row).GetCell(15)?.StringCellValue;
                 var amount = int.Parse(sheet.GetRow(row).GetCell(18).NumericCellValue.ToString(CultureInfo.InvariantCulture));
 
-                yield return new Item() { Name = name ,Price = price, Model = altName, Amount = amount };
+                yield return new Item() { Name = name, Price = price, Model = altName, Amount = amount };
             }
         }
 

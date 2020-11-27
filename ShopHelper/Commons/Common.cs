@@ -21,7 +21,8 @@ namespace ShopHelper.Commons
             Sell,
             Cost,
             TopSellPrice,
-            PriceTemplate
+            PriceTemplate,
+            UpgradStock,
         }
 
         public enum Function
@@ -32,6 +33,7 @@ namespace ShopHelper.Commons
             UpdateStockLaz,
             TopSellPricingLaz,
             UpdatePriceBYM,
+            MergeFile
         }
     }
 }

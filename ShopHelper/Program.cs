@@ -8,7 +8,7 @@ namespace ShopHelper
 {
     internal class Program
     {
-        private const string RootPath = @"C:\Users\pek\Google Drive (pexhod@gmail.com)\Shop20";
+        private const string RootPath = @"C:\Users\pbuaklay\Google Drive\Shop20";
 
         static void Main()
         {
@@ -19,6 +19,7 @@ namespace ShopHelper
             Console.WriteLine("Update stock 'Laz' press 3");
             Console.WriteLine("Update top sell price of 'Laz' press 4");
             Console.WriteLine("Update price 'BYM' press 5");
+            Console.WriteLine("Merge Lazada file ready for update stock press 6");
 
             Common.Function fucntion;
             Enum.TryParse(Console.ReadLine(), out fucntion);
@@ -31,7 +32,7 @@ namespace ShopHelper
                     Run(() => CalculateProfitLaz(
                             new PathCombination(
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
-                        Path.Combine(RootPath, @"Functions\ProfitcalLaz\sell_2.xlsx"),
+                        Path.Combine(RootPath, @"Functions\ProfitcalLaz\sell_11.xlsx"),
                         Path.Combine(RootPath, $@"Functions\ProfitcalLaz\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
@@ -39,7 +40,7 @@ namespace ShopHelper
                     Run(() => CalculateProfitSho(
                             new PathCombination(
                         Path.Combine(RootPath, @"Keep\Cost.xlsx"),
-                        Path.Combine(RootPath, @"Functions\ProfitcalBYM\sell_02.xlsx"),
+                        Path.Combine(RootPath, @"Functions\ProfitcalBYM\sell_10.xlsx"),
                         Path.Combine(RootPath, $@"Functions\ProfitcalBYM\profit_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
@@ -74,6 +75,14 @@ namespace ShopHelper
                         Path.Combine(RootPath, @"Functions\UpdatePriceBYM\shoPrice.xlsx"),
                         Path.Combine(RootPath, @"Functions\UpdatePriceBYM\bymPrice.xlsx"),
                         Path.Combine(RootPath, $@"Functions\UpdatePriceBYM\updatedPriceBYM_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
+
+                    break;
+                case Common.Function.MergeFile:
+                    Run(() => MergeFile(
+                            new PathCombination(
+                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazPrice.xlsx"),
+                        Path.Combine(RootPath, @"Functions\UpdateStockLaz\lazStock.xlsx"),
+                        Path.Combine(RootPath, $@"Functions\UpdateStockLaz\Merged_{new Random().Next()}_{DateTime.Now.Date.Month}_{DateTime.Now.Date.Day}.xlsx"))));
 
                     break;
                 default:
@@ -137,12 +146,22 @@ namespace ShopHelper
             new PriceUpdater(baseStock, targetStock).Write(Common.Shop.BYM, Path.Combine(paths.OutPutPath));
         }
 
+        private static void MergeFile(PathCombination paths)
+        {
+            Console.WriteLine("Merge price and stock Laz...");
+
+            var price = new File(Common.Shop.Lazada, Common.Type.Price).Read(paths.FirstPath);
+            var stock = new File(Common.Shop.Lazada, Common.Type.Stock).Read(paths.SecoundPath);
+
+            new Merger(price, stock).Write(Common.Shop.Lazada, Path.Combine(paths.OutPutPath));
+        }
+
         private static void UpdateStockLaz(PathCombination paths)
         {
             Console.WriteLine("Updating stock of Laz...");
 
             var baseStock = new File(Common.Shop.Shopee, Common.Type.Stock).Read(paths.FirstPath);
-            var targetStock = new File(Common.Shop.Lazada, Common.Type.Stock).Read(paths.SecoundPath);
+            var targetStock = new File(Common.Shop.Lazada, Common.Type.UpgradStock).Read(paths.SecoundPath);
 
             new StockUpdater(baseStock, targetStock).Write(Common.Shop.Lazada, Path.Combine(paths.OutPutPath));
         }

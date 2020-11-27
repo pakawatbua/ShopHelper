@@ -69,6 +69,7 @@
     <Compile Include="Helpers\MatchingHelper.cs" />
     <Compile Include="Models\PathCombination.cs" />
     <Compile Include="Program_O.cs" />
+    <Compile Include="Services\Merger.cs" />
     <Compile Include="Services\PriceManager.cs" />
     <Compile Include="Services\PriceUpdater.cs" />
     <Compile Include="Services\ProfitCalculator.cs" />
